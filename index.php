@@ -1,7 +1,17 @@
 
 <?php
 
-require_once("config.php")
+require_once("config.php");
+
+$iterator = new DirectoryIterator("resources");
+foreach ($iterator as $fileinfo) {
+    if ($fileinfo->isFile()) {
+        $class = strtolower(pathinfo( $fileinfo->getPathname() , PATHINFO_FILENAME));
+        //($class::migrateDn());
+
+        $class::migrate();
+    }
+}
 
 ?>
 

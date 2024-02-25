@@ -6,8 +6,9 @@ class Select extends FormComponent
     protected array | null $opts;
     protected string | null $selected;
     public static function make($name) {return new self($name);}
-    public function render()
+    public function render($data=[])
     {
+        $this->selected=array_key_exists($this->name,$data)?$data[$this->name]:"";
         $style="";
         if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
         $options="";
@@ -16,7 +17,7 @@ class Select extends FormComponent
         }
         $html='
         <label class="field" style="'.$style.'">
-            <select>
+            <select id="'.$this->name.'" name="'.$this->name.'">
             '.$options.'
             </select>
             <span class="label">'.$this->label.'</span>
@@ -34,6 +35,10 @@ class Select extends FormComponent
     public function selected($key){
         $this->selected=$key;
         return $this;
+    }
+
+    public function sql():string{
+        return $this->name." TEXT ". ($this->required?"":"NOT")." NULL ";
     }
 
 }

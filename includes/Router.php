@@ -15,11 +15,15 @@ class Router
         $arg= $uri[4]??'';
 
 
+        /*if ($resource=="Actions"){
+            var_dump(CURRENT_PAGE);
+        }*/
+
         //if ($resource=="Login")
         if (false)
             include "layout\login.php";
         else
-            call_user_func(array($resource,"render"));
+            call_user_func(array("Resource","render"),$uri);
     }
 
     /*private static function getURI() : array

@@ -19,14 +19,21 @@ class Phone extends Resource
             TextInput::make("phname")->label("Phone Name")->required()->columnSpan(2),
             TextInput::make("mac")->label("MAC Address")->required(),
             TextInput::make("ip")->label("IP Address")->required(),
-            Select::make("op")->label("IP Options")->options(["0"=>"on","y"=>"off"])->selected("y")->required(),
+            TextInput::make("ppp")->label("ppp")->required(),
+            Select::make("op")->label("IP Options")->options(["0"=>"on","y"=>"off"])->required(),
         ];
     }
 
-    public static function render()
+
+
+
+
+    public static function migrate(): void
     {
-        parent::render();
+        parent::migrate();
     }
+
+
 
 
 }

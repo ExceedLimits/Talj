@@ -1,4 +1,5 @@
 <?php
+include "db.php";
 spl_autoload_register(function($class){
     if (file_exists("includes/components/" . $class . '.php')) {
         require_once 'includes/components/' . $class . '.php';
@@ -38,3 +39,9 @@ function route($url)
 {
     return APP_URL.$url;
 }
+
+function DB(){
+    return new db(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+}
+
+
