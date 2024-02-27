@@ -75,9 +75,8 @@ class Resource
     }
 
     private static function renderTable($data=[]){
-
-        if ($data==[]) {echo '<h4>No Rows to show..</h4>'; return;}
         echo '<div style="margin-left:25%;padding:1rem;height:1000px;">';
+            if ($data==[]) {echo '<h4>No Rows to show..</h4></div>'; return;}
             echo '<div class="table100 ver2 m-b-110">';
                 echo '<div class="table100-head">';
                     echo'<table style="margin-bottom: 0!important;">';
