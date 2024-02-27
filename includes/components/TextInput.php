@@ -10,10 +10,11 @@ class TextInput extends FormComponent
        $style="";
        if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
        $html='
-        <label class="field" style="'.$style.'">
+        <div class="field" style="'.$style.'">
+            <label>'.$this->label.'<span class="fs-base" style="color: #E2013D"> * </span></label>
             <input id="'.$this->name.'" name="'.$this->name.'" type="text" value="'.$val.'" />
-            <span class="label">'.$this->label.'<span class="fs-base" style="color: #E2013D"> * </span></span>
-        </label>
+            
+        </div>
        ';
        echo $html;
    }

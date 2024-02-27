@@ -60,16 +60,16 @@ class Resource
     private static function renderForm($sender,$arg,$data=[]){
        // var_dump(APP_URL."/".);
         $op=$data==[]?"add":"update";
-        echo "<form method='post' action='".APP_URL."/".$sender."/save/".$arg."'>";
-        echo '<div style="margin-left:25%;padding:1rem;height:1000px;">';
-        echo '<h4>Add New '.$sender::$singleLabel.'</h4>';
-        echo '<section class="grid" style="--columns: '.$sender::$formColumns.';">';
+        echo "<form class='ui form' style='padding:1rem' method='post' action='".APP_URL."/".$sender."/save/".$arg."'>";
+        echo '<div>';
+        echo '<h4 class="ui dividing header">Add New '.$sender::$singleLabel.'</h4>';
+        echo '<section class="ui grid" style="--columns: '.$sender::$formColumns.';">';
         foreach ($sender::form() as $elem){
             $elem->render($data);
         }
         echo '</section>';
-        echo '<button type="submit" class="button" style="margin-right: 0.5rem"> '.ucfirst($op)." ".$sender::$singleLabel.'</button>';
-        echo '<button class="button -secondary" style="">Cancel</button>';
+        echo '<button type="submit" class="red ui button" style="margin-right: 0.5rem"> '.ucfirst($op)." ".$sender::$singleLabel.'</button>';
+        echo '<button class="button ui" style="">Cancel</button>';
         echo "</div>";
         echo "</form>";
     }

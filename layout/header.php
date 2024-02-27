@@ -1,19 +1,28 @@
-    <ul class="nav">
-        <li class="nav active" style="width: 20%!important;">
-            <img src="<?php getAsset("images/logo.png")?>" width="32px" style="padding: 1rem" alt="img"> <strong><?php echo APP_NAME?></strong>
-        </li>
-    <?php if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true): ?>
-        <li class="nav user" style="flex-flow: column;">
-            <a href="#" style="align-content: center;align-items: center;padding: 0.1rem;color: #E2013D">
-                <h5 style="margin: 0;padding: 0.2rem;font-size: medium"><i class="fa fa-user"></i> Ammar </h5>
-            </a>
 
-            <a href="#" style="align-content: center;align-items: center;">
-                <h5 style="margin: 0;padding: 0.2rem;font-size: small"><i class="fa fa-arrow-circle-left"></i> Logout?</h5>
-            </a>
 
-        </li>
-    <?php endif;?>
-    </ul>
+
+    <nav class="ui menu inverted borderless" >
+        <div class="header item">
+            <img src="<?php getAsset("images/logo.png")?>" class="ui middle aligned tiny image" alt="img"> <h2 style="margin: 0"><?php echo APP_NAME?></h2>
+        </div>
+
+        <div class="right item">
+            <div class="ui compact menu inverted">
+                <div class="ui simple dropdown item">
+
+                    <i class="user large circle icon"></i>
+                    <div class="menu">
+                        <div class="item"><i class="info circle icon"></i> Profile</div>
+                        <div class="item"><i class="wrench icon"></i> Settings</div>
+                        <div class="item"><i class="sign-out icon"></i> Logout</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+
 
 

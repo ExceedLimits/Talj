@@ -7,7 +7,7 @@ class Phone extends Resource
 
     public static string | null $pluralLabel="Phones";
 
-    public static string | null $icon= "fa fa-phone";
+    public static string | null $icon= "phone";
 
     public static int | null $order =1;
 

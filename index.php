@@ -30,27 +30,34 @@ foreach ($iterator as $fileinfo) {
     <title><?php echo APP_NAME; ?></title>
 
     <?php
-        getCSSAsset("cutestrap.css");
+        //getCSSAsset("cutestrap.css");
         getCSSAsset("app.css");
-        getFontAsset("font-awesome/css/font-awesome.min.css");
+        getCSSAsset("semantic.min.css");
+
+        //getFontAsset("font-awesome/css/font-awesome.min.css");
+
         getJSAsset("jquery.min.js");
+        getJSAsset("semantic.min.js");
     ?>
 
 </head>
 
-<body>
-
-<?php
-    require_once("layout/header.php");
-
-    if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true){
-        require_once("layout/sidebar.php");
-    }
-
-    Router::contentToRender();
-
-    require_once("layout/footer.php");
-?>
+<body style="padding: 1rem">
+<div class="ui container" >
+    <?php require_once("layout/header.php");?>
+    <div class="ui grid" style="padding: 0.5rem">
+        <div class="column four wide">
+            <?php
+            if (true){//if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true){
+                require_once("layout/sidebar.php");
+            }
+            ?>
+        </div>
+        <div class="column twelve wide">
+            <?php Router::contentToRender();?>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

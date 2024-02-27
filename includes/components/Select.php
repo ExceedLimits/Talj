@@ -16,12 +16,13 @@ class Select extends FormComponent
             $options.="<option ".(($key===$this->selected)?'selected':'')." value='".$key."'>".$value."</option>";
         }
         $html='
-        <label class="field" style="'.$style.'">
-            <select id="'.$this->name.'" name="'.$this->name.'">
+        <div class="field" style="'.$style.'">
+            <label>'.$this->label.'</label>
+            <select class="ui fluid dropdown" id="'.$this->name.'" name="'.$this->name.'">
             '.$options.'
             </select>
-            <span class="label">'.$this->label.'</span>
-        </label>
+            
+        </div>
        ';
         echo $html;
     }
