@@ -32,7 +32,7 @@ function getFontAsset($lib):void
 
 function getJSAsset($lib):void
 {
-    echo '<link href="'.ASSET_URL.'js/'.$lib.'" rel="stylesheet">';
+    echo '<script src="'.ASSET_URL.'js/'.$lib.'"></script>';
 }
 
 function route($url)
@@ -42,6 +42,12 @@ function route($url)
 
 function DB(){
     return new db(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+}
+
+function xss_clean($string){
+    if ($string)
+        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+
 }
 
 

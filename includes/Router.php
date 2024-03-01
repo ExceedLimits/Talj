@@ -8,11 +8,11 @@ class Router
         $path_info = $_SERVER['REQUEST_URI'] ?? '/';
         $uri= explode('/', $path_info);
 
-//check later for correct base root url
+/*
 
         $resource= ucfirst($uri[2])??'';
         $operation= $uri[3]??'';
-        $arg= $uri[4]??'';
+        $arg= $uri[4]??'';*/
 
 
         /*if ($resource=="Actions"){

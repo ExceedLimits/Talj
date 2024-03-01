@@ -1,6 +1,5 @@
-
 <?php
-
+ob_start();
 require_once("config.php");
 
 $iterator = new DirectoryIterator("resources");
@@ -36,8 +35,7 @@ foreach ($iterator as $fileinfo) {
 
         //getFontAsset("font-awesome/css/font-awesome.min.css");
 
-        getJSAsset("jquery.min.js");
-        getJSAsset("semantic.min.js");
+
     ?>
 
 </head>
@@ -58,6 +56,11 @@ foreach ($iterator as $fileinfo) {
         </div>
     </div>
 </div>
+<?php
+getJSAsset("jquery.min.js");
+getJSAsset("semantic.min.js");
+getJSAsset("app.js");
+?>
 
 </body>
 </html>

@@ -19,7 +19,7 @@ class Form
 
         $html='
         <form class="ui form" style="padding:1rem" method="post" action="'. $actionURL .'">
-            <h4 class="ui dividing header">New '.$op.'</h4>
+            <h1 class="ui dividing header"> '.$op.'</h1>
             <div class="ui container">
                 <section class="ui '.$cols.' column grid">';
         echo $html;
@@ -45,6 +45,10 @@ class Form
     public function schema($fields=[]) {
         $this->schema=$fields;
         return $this;
+    }
+
+    public function getSchema() {
+        return $this->schema;
     }
 
 }
