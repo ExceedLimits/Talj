@@ -29,8 +29,8 @@ class Phone extends Resource
     protected static function table()
     {
         return Table::make()->schema([
-            TextColumn::make("id")->label("ID")->columnSpan(1),
-            TextColumn::make("phname")->label("Phone Name")->columnSpan(8),
+            TextColumn::make("id")->label("ID")->columnSpan(1)->seachable(),
+            TextColumn::make("phname")->label("Phone Name")->columnSpan(8)->seachable(),
             TextColumn::make("ip")->label("IP Address")->columnSpan(6),
         ])->resultPerPage(5);
     }

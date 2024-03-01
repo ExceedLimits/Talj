@@ -9,10 +9,10 @@ class Table
 
 
     public static function make() {return new self();}
-    public function render($sender,$arg)
+    public function render($sender,$arg,$term)
     {
         $controller= new Controller($sender);
-        $data= $controller->getPage($arg);
+        $data= $controller->getPage($arg,$term);
 
         if ($data==[]) {echo "<div class='ui container'><h4>No Rows to show..</h4></div>"; return;}
 

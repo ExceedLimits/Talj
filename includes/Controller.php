@@ -8,14 +8,18 @@ class Controller
         $this->sender=$sender;
     }
 
-    public function getTotalCount(){
-        return DB()->query("select count(*) as c from ".$this->sender)->fetchArray()['c'];
+    public function getTotalCount($term="",$filters=[]){
+        $wh=" where (1=1)";
+        foreach ($filters as $f) {$wh.=" OR (".$f." LIKE '%".$term."%') ";}
+        return DB()->query("select count(*) as c from ".$this->sender.$wh)->fetchArray()['c'];
     }
 
-    public function getPage($page){
+    public function getPage($page,$term="",$filters=[]){
         $pagesize=$this->sender::getTablePageSize();
         $calc_page = ($page - 1) * $pagesize;
-        return DB()->query("select * from ".$this->sender." LIMIT ".$calc_page.",".$pagesize)->fetchAll();
+        $wh=" where (1=1)";
+        foreach ($filters as $f) {$wh.=" OR (".$f." LIKE '%".$term."%') ";}
+        return DB()->query("select * from ".$this->sender.$wh." LIMIT ".$calc_page.",".$pagesize)->fetchAll();
     }
 
     public function delete($id)

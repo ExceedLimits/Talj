@@ -32,7 +32,7 @@ class Resource
 
         //phone/show/all
         if ($operation=="show"){
-            $sender::table()->render($sender,$arg);
+            $sender::table()->render($sender,$arg,"");
             return;
         }
 
