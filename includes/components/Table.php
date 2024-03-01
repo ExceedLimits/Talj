@@ -106,11 +106,11 @@ class Table
         return $this->pageSize;
     }
 
-    protected function getPaginationLinks($sender,$page){
+    protected function getPaginationLinks($sender,$page):void{
 
         $controller= new Controller($sender);
         $total= $controller->getTotalCount();
-        if ($total < $this->pageSize) return "";
+        if ($total < $this->pageSize) echo "";
         $total_pages = ceil($total / $this->pageSize);
         $prev = ($page - 1);
         $next = ($page + 1);
