@@ -20,10 +20,10 @@ class Table
         echo '
             <div class="ui borderless menu">
                 <div class="item">
-                <h2 class="ui header">'.$sender::$pluralLabel.'</h2>
+                <h1 class="ui header">'.$sender::$pluralLabel.'</h1>
                 </div>
                 <div class="item">
-                <a href="'.APP_URL.'/'.$sender.'/add/new'.'" class="ui red button right">New '.$sender::$singleLabel.'</a>
+                <a href="'.APP_URL.'/'.$sender.'/add/new'.'" class="ui red button right"><i class="icon plus"></i>New '.$sender::$singleLabel.'</a>
                 </div>
                 <div class="item right">
                     <form action="#">
@@ -34,8 +34,7 @@ class Table
                             </button>
                         </div>
                     </form>
-                </div>
-                
+                </div>                
             </div>
         ';
 
