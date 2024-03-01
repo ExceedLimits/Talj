@@ -1,7 +1,7 @@
 <?php
 
 
-class Select extends FormComponent
+class Select extends Component
 {
     protected array | null $opts;
     protected string | null $selected;
@@ -16,7 +16,7 @@ class Select extends FormComponent
             $options.="<option ".(($key===$this->selected)?'selected':'')." value='".$key."'>".$value."</option>";
         }
         $html='
-        <div class="field" style="'.$style.'">
+        <div class="field column" style="'.$style.'">
             <label>'.$this->label.'</label>
             <select class="ui fluid dropdown" id="'.$this->name.'" name="'.$this->name.'">
             '.$options.'

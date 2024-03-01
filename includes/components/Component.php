@@ -1,7 +1,7 @@
 <?php
 
 
-class FormComponent
+class Component
 {
     protected string | null $name="";
 

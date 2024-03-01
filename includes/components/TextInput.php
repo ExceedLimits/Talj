@@ -1,7 +1,7 @@
 <?php
 
 
-class TextInput extends FormComponent
+class TextInput extends Component
 {
     public static function make($name) {return new self($name);}
     public function render($data)
@@ -10,7 +10,7 @@ class TextInput extends FormComponent
        $style="";
        if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
        $html='
-        <div class="field" style="'.$style.'">
+        <div class="field column" style="'.$style.'">
             <label>'.$this->label.'<span class="fs-base" style="color: #E2013D"> * </span></label>
             <input id="'.$this->name.'" name="'.$this->name.'" type="text" value="'.$val.'" />
             
