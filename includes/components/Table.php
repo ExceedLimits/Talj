@@ -22,9 +22,20 @@ class Table
                 <div class="item">
                 <h2 class="ui header">'.$sender::$pluralLabel.'</h2>
                 </div>
-                <div class="item right">
+                <div class="item">
                 <a href="'.APP_URL.'/'.$sender.'/add/new'.'" class="ui red button right">New '.$sender::$singleLabel.'</a>
                 </div>
+                <div class="item right">
+                    <form action="#">
+                        <div class="ui mini action input">
+                            <input type="text" placeholder="Search..." />
+                            <button class="ui mini icon button">
+                                <i class=" search icon"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
             </div>
         ';
 
@@ -33,7 +44,7 @@ class Table
 
                 echo '<tr class="center aligned">';
                     foreach ($this->schema as $col){echo $col->renderHeader();}
-                    echo '<th class="three wide"></th>';
+                    echo '<th class="three wide">Actions</th>';
                 echo '</tr>';
             echo '</thead>';
             echo '<tbody>';
