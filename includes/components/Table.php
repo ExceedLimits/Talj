@@ -9,12 +9,17 @@ class Table
 
 
     public static function make() {return new self();}
-    public function render($sender,$arg,$term)
+    public function render($sender,$page,$term="")
     {
         $controller= new Controller($sender);
-        $data= $controller->getPage($arg,$term);
+        $filters=array();
+        foreach ($this->schema as $col){
+            if ($col->searchable()) $filters[]=$col;
+        }
+        $data= $controller->getPage($page,$term,$filters);
+        $total= $controller->getTotalCount($term,$filters);
 
-        if ($data==[]) {echo "<div class='ui container'><h4>No Rows to show..</h4></div>"; return;}
+
 
         //if ($headers==[]) $headers= array_keys($data[0]);
         echo '
@@ -37,7 +42,6 @@ class Table
                 </div>                
             </div>
         ';
-
         echo '<table class="ui collapsing red table">';
             echo '<thead>';
 
@@ -81,7 +85,35 @@ class Table
                 }
             echo '</tbody>';
             echo '<tfoot><tr><th colspan="5">';
-            $this->getPaginationLinks($sender,$arg);
+            //pagination links
+
+            if ($total < $this->pageSize) echo "";
+            $total_pages = ceil($total / $this->pageSize);
+            $prev = ($page - 1);
+            $next = ($page + 1);
+            $pagination='<div class="ui right floated pagination menu">';
+            if ($page>1){
+                $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$prev.'"><i class="icon small chevron left"></i> Previous</a> ';
+            }
+            for($i = 1; $i <= $total_pages; $i++)
+            {
+                if(($page) == $i)
+                {
+                    $pagination .= '<a class="item active" href="">'.$i.'</a>';
+                }
+                else
+                {
+                    $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$i.'">'.$i.'</a>';
+                }
+            }
+            if($page < $total_pages)
+            {
+                $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$next.'"> Next <i class="icon small chevron right"></i></a>';
+            }
+
+            $pagination.='</div>';
+            echo $pagination;
+
             echo '</th></tr></tfoot>';
 
 
@@ -105,37 +137,4 @@ class Table
     {
         return $this->pageSize;
     }
-
-    protected function getPaginationLinks($sender,$page):void{
-
-        $controller= new Controller($sender);
-        $total= $controller->getTotalCount();
-        if ($total < $this->pageSize) echo "";
-        $total_pages = ceil($total / $this->pageSize);
-        $prev = ($page - 1);
-        $next = ($page + 1);
-        $pagination='<div class="ui right floated pagination menu">';
-        if ($page>1){
-            $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$prev.'"><i class="icon small chevron left"></i> Previous</a> ';
-        }
-        for($i = 1; $i <= $total_pages; $i++)
-        {
-            if(($page) == $i)
-            {
-                $pagination .= '<a class="item active" href="">'.$i.'</a>';
-            }
-            else
-            {
-                $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$i.'">'.$i.'</a>';
-            }
-        }
-        if($page < $total_pages)
-        {
-            $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$next.'"> Next <i class="icon small chevron right"></i></a>';
-        }
-
-        $pagination.='</div>';
-        echo $pagination;
-    }
-
 }

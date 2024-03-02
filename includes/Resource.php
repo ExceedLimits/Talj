@@ -28,11 +28,13 @@ class Resource
         $operation= $uri[3]??'';
         $arg= $uri[4]??'';
 
+        $term = $_GET("term")??"";
+
         $controller= new Controller($sender);
 
         //phone/show/all
         if ($operation=="show"){
-            $sender::table()->render($sender,$arg,"");
+            $sender::table()->render($sender,$arg,$term);
             return;
         }
 

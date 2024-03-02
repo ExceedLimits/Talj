@@ -12,12 +12,16 @@ class TextColumn extends Column
         echo '<td>'.$val.'</td>';
     }
 
-    public function seachable($isSearchable=true)
+    public function searchable($isSearchable=true)
     {
         $this->searchable=$isSearchable;
         return $this;
     }
 
+    public function getName()
+    {
+        return parent::getName();
+    }
 
 
 }

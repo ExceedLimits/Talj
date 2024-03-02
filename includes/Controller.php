@@ -18,7 +18,7 @@ class Controller
         $pagesize=$this->sender::getTablePageSize();
         $calc_page = ($page - 1) * $pagesize;
         $wh=" where (1=1)";
-        foreach ($filters as $f) {$wh.=" OR (".$f." LIKE '%".$term."%') ";}
+        foreach ($filters as $f) {$wh.=" OR (".$f->getName()." LIKE '%".$term."%') ";}
         return DB()->query("select * from ".$this->sender.$wh." LIMIT ".$calc_page.",".$pagesize)->fetchAll();
     }
 

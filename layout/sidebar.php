@@ -19,7 +19,7 @@
             foreach ($iterator as $fileinfo) {
                 if ($fileinfo->isFile()) {
                     $class = strtolower(pathinfo( $fileinfo->getPathname() , PATHINFO_FILENAME));
-                    echo '<a class="item" href="'.route("/".$class."/show").'"><div><i class="'.$class::$icon.' icon"></i> '.$class::$pluralLabel.'</div></a>';
+                    echo '<a class="item" href="'.route("/".$class."/show/1").'"><div><i class="'.$class::$icon.' icon"></i> '.$class::$pluralLabel.'</div></a>';
                 }
             }
             ?>
