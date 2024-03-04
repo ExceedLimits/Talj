@@ -20,21 +20,36 @@ class Phone extends Resource
                 TextInput::make("phname")->label("Phone Name")->required()->columnSpan(2),
                 TextInput::make("mac")->label("MAC Address")->required(),
                 TextInput::make("ip")->label("IP Address")->required(),
-                TextInput::make("ppp")->label("ppp")->required(),
-                Select::make("op")->multiple()->label("IP Options")->options(["0"=>"on","y"=>"off"])->required(),
-                Select::make("users")->label("Users")->relationship("User","username")->required()
+                TextInput::make("sn")->label("Serial Number")->required()->columnSpan(2),
+                Select::make("profile")->label("Profile")->relationship("Profile","p_name")->columnSpan(2)->required()
             ]
-        )->columns(3);
+        )->columns(2);
     }
 
     protected static function table()
     {
         return Table::make()->schema([
             //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable(),
-            TextColumn::make("phname")->label("Phone Name")->columnSpan(8)->searchable(),
+            TextColumn::make("phname")->label("Phone Name")->columnSpan(3)->searchable(),
             TextColumn::make("ip")->label("IP Address")->columnSpan(6)->searchable(),
             TextColumn::make("mac")->label("MAC Address")->columnSpan(2)->searchable(),
-        ])->resultPerPage(1);
+            SelectColumn::make("profile")->label("Profile")->relationship("Profile","p_name")->columnSpan(5)
+        ])->resultPerPage(10);
+    }
+
+    protected static function afterSave($id,$data)
+    {
+        parent::afterSave($id,$data);
+
+        if ($id!="new") $phone= DB()->get("phone",$id); else $phone=$data;
+        $profile= DB()->get("profile",$phone['profile']);
+        //die(var_dump(mkdir("../snomD865")));
+        if (!is_dir("snomD865")) {  mkdir("snomD865");}
+        //die(var_dump("../".$profile["p_name"].".xml"));
+        $data= file_get_contents("".$profile["p_name"].".xml");
+        //die($data);
+        file_put_contents("snomD865/".$phone["mac"].".xml",$data);
+
     }
 
 

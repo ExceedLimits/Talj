@@ -11,10 +11,14 @@ class Resource
 
     protected static int | null $order =1;
 
+    protected static bool | null $dashboarded=true;
+
     public static function getIcon(){return get_called_class()::$icon;}
     public static function getSingleLabel(){return get_called_class()::$singleLabel;}
     public static function getPluralLabel(){return get_called_class()::$pluralLabel;}
     public static function getOrder(){return get_called_class()::$order;}
+
+    public static function getDashboarded(){return get_called_class()::$dashboarded;}
 
     protected static function form()
     {
@@ -58,39 +62,28 @@ class Resource
                 if (is_array($_POST[$key])){
                     $_POST[$key]=implode(",",array_values($_POST[$key]));
                 }
+
+                if (strpos($key,"_grp_")>-1){
+                    $namebits=explode("_grp_",$key);
+                    if (!array_key_exists($namebits[1],$_POST)){$_POST[$namebits[1]]="";}
+                    $_POST[$namebits[1]].=$namebits[0].":".$p."|";
+                    unset($_POST[$key]);
+                }
             }
+
+
 
             if (isset($_POST['password'])){
                 $_POST['password']=password_hash($_POST['password'], PASSWORD_DEFAULT);
             }
             $controller->updateIfFound($_POST,$arg);
+            $sender::afterSave($id=$arg,$data=$_POST);
             $router->operation()->arg()->goto();
         }
 
 
 
         $sender::form()->render($sender,$arg=="new"?[]:$controller->getByID($arg));
-
-        /*if ($arg=="new"){
-            //phone/add/new
-            if ($operation=="add"){
-                self::renderForm($sender,$arg);
-            }
-            //phone/save/new
-            if($operation=="save"){
-                self::add($sender,$_POST);
-            }
-        }else{
-            //phone/edit/1
-            if ($operation=="edit"){
-                self::renderForm($sender,$arg,self::get($sender,$arg));
-            }
-            //phone/save/1
-            if($operation=="save"){
-                self::update($sender,$_POST,$arg);
-            }
-        }*/
-
 
     }
 
@@ -99,6 +92,11 @@ class Resource
         return  $sender::table()->getPageSize();
     }
 
+
+    protected static function afterSave($id,$data)
+    {
+
+    }
 
 
 

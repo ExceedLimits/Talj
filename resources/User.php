@@ -11,15 +11,16 @@ class User extends Resource
 
     public static int | null $order =5;
 
+    public static bool | null $dashboarded=false;
+
 
 
     public static function form()
     {
         return Form::make()->schema(
             [
-                TextInput::make("username")->label("User Name")->required()->columnSpan(2),
+                TextInput::make("username")->label("User Name")->required(),
                 TextInput::make("password")->label("password")->password()->required(),
-
             ]
         )->columns(2);
     }
@@ -28,9 +29,9 @@ class User extends Resource
     {
         return Table::make()->schema([
             //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable(),
-            TextColumn::make("username")->label("User Name")->columnSpan(12)->searchable(),
+            TextColumn::make("username")->label("User Name")->columnSpan(16)->searchable(),
 
-        ])->resultPerPage(1);
+        ])->resultPerPage(10);
     }
 
 

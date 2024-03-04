@@ -3,7 +3,8 @@
 
 class Select extends Component
 {
-    protected array | null $opts;
+    protected array | null $opts=[];
+
     protected string | null $selected;
     protected bool | null $multi=false;
     public static function make($name) {return new self($name);}
@@ -13,18 +14,18 @@ class Select extends Component
         $dataval= array_key_exists($this->name,$data)?$data[$this->name]:"";
         $name= ($this->multi)?$this->name."[]":$this->name;
         $style="";
-        if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
+        //if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
         $options="";
         foreach ($this->opts as $key=>$value){
+
             $options.="<option ".((in_array($key,explode(",",$dataval)))?'selected':'')." value='".$key."'>".$value."</option>";
         }
         $html='
-        <div class="field column '.($this->isRequired()?"required":"").'" style="'.$style.'">
+        <div class="field '.($this->isRequired()?"required":"").'" style="'.$style.'">
             <label>'.$this->label.'</label>
             <select '.(($this->multi)?"multiple":"").' class="ui fluid dropdown search" data-required="'.($this->isRequired()?1:0).'" id="'.$this->name.'" name="'.$name.'">
             <option value="">Select</option>'.$options.'
-            </select>
-            
+            </select>            
         </div>
        ';
         echo $html;
@@ -39,8 +40,11 @@ class Select extends Component
 
     public function relationship($resource,$label){
         $this->opts=[];
-        $ops= DB()->query("select id,".$label." from ".strtolower($resource))->fetchAll();
-        foreach ($ops as $op) $this->opts[$op["id"]]=$op[$label];
+        if (DB()->tableFound(strtolower($resource))){
+            $ops= DB()->query("select id,".$label." from ".strtolower($resource))->fetchAll();
+            foreach ($ops as $op) $this->opts[$op["id"]]=$op[$label];
+        }
+
         return $this;
     }
 

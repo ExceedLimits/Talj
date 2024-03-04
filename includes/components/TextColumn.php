@@ -4,7 +4,7 @@
 class TextColumn extends Column
 {
 
-    protected bool | null $searchable=false;
+
 
     public static function make($name) {return new self($name);}
     public function render($val)
@@ -12,10 +12,9 @@ class TextColumn extends Column
         echo '<td>'.$this->xss_clean($val).'</td>';
     }
 
-    public function searchable($isSearchable=true)
+    public function searchable($isSearchable = true)
     {
-        $this->searchable=$isSearchable;
-        return $this;
+        return parent::searchable($isSearchable);
     }
 
     public function getName()

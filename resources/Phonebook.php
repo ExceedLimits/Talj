@@ -27,7 +27,7 @@ class Phonebook extends Resource
         return Table::make()->schema([
             //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable(),
             TextColumn::make("f_name")->label("Phone Name")->columnSpan(16)->searchable(),
-        ])->resultPerPage(1);
+        ])->resultPerPage(10);
     }
 
 

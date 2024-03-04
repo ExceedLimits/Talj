@@ -10,13 +10,15 @@ class TextInput extends Component
        $val=array_key_exists($this->name,$data)?$data[$this->name]:"";
        if ($this->type=="password") $val="";
        $style="";
-       if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
+       //if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
        $html='
-        <div class="field column '.($this->isRequired()?"required":"").'" style="'.$style.'">
+       <div ></div>      
+        <div class="field '.($this->isRequired()?"required":"").'" style="'.$style.'">
             <label>'.$this->label.'</label>
             <input id="'.$this->name.'" name="'.$this->name.'" data-required="'.($this->isRequired()?1:0).'" type="'.$this->type.'"  value="'.$val.'" />
             
         </div>
+       
        ';
        echo $html;
    }

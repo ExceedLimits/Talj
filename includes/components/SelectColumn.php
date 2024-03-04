@@ -7,7 +7,7 @@ class SelectColumn extends Column
     protected string $resource="";
     protected string $resourceLabel="";
 
-    protected array | null $opts;
+    protected array | null $opts=[];
     protected bool | null $searchable=false;
 
     public static function make($name) { return new self($name);}

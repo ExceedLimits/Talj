@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+    <phone-settings>
+
+        <!-- General settings, e.g. localisation and update policy -->
+
+        <update_policy>auto_update</update_policy>
+        <phone_name perm="R">Snom-D385</phone_name> <!-- hostname of the phone. If set, the hostname is used to sign syslog packages and as the title of the WUI -->
+        <language perm="">ST_LANG</language>
+        <web_language perm="">ST_LANG</web_language>
+        <date_us_format perm="">off</date_us_format>
+        <dialnumber_us_format perm="">off</dialnumber_us_format>
+        <timezone>GER+1</timezone>
+        <tone_scheme>GER</tone_scheme>
+        HARD_KEYS
+    </phone-settings>
+
+    <!-- Here we define the functions and values of the fkeys on the phone -->
+
+    <functionKeys e="2">
+        <fkey idx="FN_IDX" context="active" short_label_mode="icon_text" short_label="" short_default_text="!!$(::)!!$(generate_via_conditional_label_short)" label_mode="icon_text" icon_type="" reg_label_mode="icon_text" ringer="Silent" label="" lp="on" default_text="!!$(::)!!$(generate_via_conditional_label_full)" perm="">FN_VALX</fkey>
+    </functionKeys>
+
+    <!-- Phone directory entries locally stored on the phone -->
+
+    <tbook e="2">
+        <item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>
+    </tbook>
+</settings>

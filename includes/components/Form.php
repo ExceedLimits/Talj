@@ -14,23 +14,27 @@ class Form
         $actionURL= Router::resource($sender)->operation("save")->arg(count($data)==0?"new":$data['id'])->url();
 
         $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-        $cols= $f->format($this->cols);
+        $totalcols= 16/($this->cols);
 
 
         $html='
         <form class="ui form responsive" style="padding:1rem" method="post" action="'. $actionURL .'">
             <h1 class="ui dividing header"> '.$op.'</h1><div class="ui error message"></div>
             
-            <div class="ui container">
-                <section class="ui '.$cols.' column grid">';
+            <div class="">
+                <section class="ui grid">
+                <div class="row">';
         echo $html;
                     foreach ($this->schema as $elem){
+                        echo '<div class="'.$f->format($totalcols*$elem->getColumnSpan()).' wide column" style="padding:0.5rem">';
                         if ($elem instanceof Heading)
                             $elem->render();
                         else
                             $elem->render($data);
+                        echo '</div>';
                     }
-        $html=' </section>
+        $html='</div> 
+            </section>
             </div>
             <div class="ui divider"></div>
             <button type="submit" class="red ui button" style="margin-right: 0.5rem"> '.$op.'</button>
@@ -44,7 +48,8 @@ class Form
 
 
     public function columns($cols=1) {
-        $this->cols=$cols;
+
+        $this->cols=($cols);
         return $this;
     }
 

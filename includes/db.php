@@ -54,6 +54,10 @@ class db {
       return $this->query("select * from ".$tbl." where id=".$id)->fetchArray();
     }
 
+    public function getIn($tbl,$ids):array{
+        return $this->query("select * from ".$tbl." where id in (".$ids.")")->fetchAll();
+    }
+
     public function count($tbl){
         return $this->query("select count(*) as c from ".$tbl)->fetchArray()["c"];
     }
@@ -64,8 +68,20 @@ class db {
         $this->query("UPDATE ".$tbl. " SET ".implode(',',$updates)." where id=".$id);
     }
 
+    public function tableFound($tbl)
+    {
+        try{
+            $this->query("select count(*) from ".$tbl)->fetchArray();
+
+            return true;
+        }catch (Exception $exception){
+            return false;
+        }
+        //return $this->query("SELECT count(*) as c FROM information_schema.tables WHERE table_schema = '".DB_NAME."' AND table_name = '".$tbl."'")->fetchArray()["c"]=="1";
+    }
+
     public function delete($tbl,$id){
-        var_dump("delete from ".$tbl." where id=".$id);
+        //var_dump("delete from ".$tbl." where id=".$id);
         $this->query("delete from ".$tbl." where id=".$id);
     }
 

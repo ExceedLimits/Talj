@@ -9,6 +9,8 @@ class Column
 
     protected string | null $colSpan="one";
 
+    protected bool | null $searchable=false;
+
     public function __construct($name)
     {
         $this->name=$name;
@@ -49,6 +51,13 @@ class Column
         return $this;
     }
 
+    public function searchable($isSearchable=true)
+    {
+        $this->searchable=$isSearchable;
+        return $this;
+    }
+
+    public  function isSearchable(){return $this->searchable;}
 
 
 

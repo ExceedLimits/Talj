@@ -15,7 +15,7 @@ class Table
         $controller= new Controller($sender);
         $filters=array();
         foreach ($this->schema as $col){
-            if ($col->searchable()) $filters[]=$col;
+            if ($col->isSearchable()) $filters[]=$col;
         }
         $data= $controller->getPage($page,$term,$filters);
         $total= $controller->getTotalCount($term,$filters);

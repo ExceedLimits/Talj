@@ -30,11 +30,11 @@ class Contact extends Resource
         return Table::make()->schema([
             //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable(),
             TextColumn::make("f_name")->label("First Name")->columnSpan(4)->searchable(),
-            TextColumn::make("l_name")->label("Last Name")->columnSpan(4)->searchable(),
-            TextColumn::make("num")->label("Phone Number")->columnSpan(3)->searchable(),
+            TextColumn::make("l_name")->label("Last Name")->columnSpan(4),
+            TextColumn::make("num")->label("Phone Number")->columnSpan(3),
             SelectColumn::make("pb")->label("Phonebooks")->relationship("Phonebook","f_name")->columnSpan(5)
 
-        ])->resultPerPage(1);
+        ])->resultPerPage(10);
     }
 
 
