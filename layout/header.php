@@ -3,7 +3,7 @@
 
     <nav class="ui menu inverted borderless" >
         <div class="header item">
-            <img src="<?php getAsset("images/logo.png")?>" class="ui middle aligned tiny image" alt="img"> <h2 style="margin: 0"><?php echo APP_NAME?></h2>
+            <img src="<?php Router::getAsset("images/logo.png")?>" class="ui middle aligned tiny image" alt="img"> <h2 style="margin: 0"><?php echo APP_NAME?></h2>
         </div>
 
         <div class="right item">

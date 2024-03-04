@@ -21,7 +21,8 @@ class Phone extends Resource
                 TextInput::make("mac")->label("MAC Address")->required(),
                 TextInput::make("ip")->label("IP Address")->required(),
                 TextInput::make("ppp")->label("ppp")->required(),
-                Select::make("op")->label("IP Options")->options(["0"=>"on","y"=>"off"])->required(),
+                Select::make("op")->multiple()->label("IP Options")->options(["0"=>"on","y"=>"off"])->required(),
+                Select::make("users")->label("Users")->relationship("User","username")->required()
             ]
         )->columns(3);
     }
@@ -29,10 +30,11 @@ class Phone extends Resource
     protected static function table()
     {
         return Table::make()->schema([
-            TextColumn::make("id")->label("ID")->columnSpan(1)->seachable(),
-            TextColumn::make("phname")->label("Phone Name")->columnSpan(8)->seachable(),
-            TextColumn::make("ip")->label("IP Address")->columnSpan(6),
-        ])->resultPerPage(5);
+            //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable(),
+            TextColumn::make("phname")->label("Phone Name")->columnSpan(8)->searchable(),
+            TextColumn::make("ip")->label("IP Address")->columnSpan(6)->searchable(),
+            TextColumn::make("mac")->label("MAC Address")->columnSpan(2)->searchable(),
+        ])->resultPerPage(1);
     }
 
 

@@ -5,21 +5,23 @@ class Controller
     protected $sender="Resource";
     public function __construct($sender)
     {
-        $this->sender=$sender;
+        $this->sender=strtolower($sender);
+    }
+
+    protected function getWhere($term,$filters=[]){
+        $wh=array();
+        foreach ($filters as $f) {$wh[]="(".$f->getName()." LIKE '%".$term."%')";}
+        return " WHERE " .implode(' OR ',$wh);
     }
 
     public function getTotalCount($term="",$filters=[]){
-        $wh=" where (1=1)";
-        foreach ($filters as $f) {$wh.=" OR (".$f." LIKE '%".$term."%') ";}
-        return DB()->query("select count(*) as c from ".$this->sender.$wh)->fetchArray()['c'];
+        return DB()->query("select count(*) as c from ".$this->sender.$this->getWhere($term,$filters))->fetchArray()['c'];
     }
 
     public function getPage($page,$term="",$filters=[]){
         $pagesize=$this->sender::getTablePageSize();
         $calc_page = ($page - 1) * $pagesize;
-        $wh=" where (1=1)";
-        foreach ($filters as $f) {$wh.=" OR (".$f->getName()." LIKE '%".$term."%') ";}
-        return DB()->query("select * from ".$this->sender.$wh." LIMIT ".$calc_page.",".$pagesize)->fetchAll();
+        return DB()->query("select * from ".$this->sender.$this->getWhere($term,$filters)." LIMIT ".$calc_page.",".$pagesize)->fetchAll();
     }
 
     public function delete($id)
@@ -34,8 +36,12 @@ class Controller
             DB()->update($this->sender,$data,$arg);
     }
 
-    public function getByID($sender,$id):array{
-        return DB()->get($sender,$id);
+    public function getByID($id):array{
+        return DB()->get($this->sender,$id);
+    }
+
+    public function isEmpty(){
+        return DB()->count($this->sender)=="0";
     }
 
 }

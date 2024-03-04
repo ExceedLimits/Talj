@@ -41,6 +41,8 @@ class Component
         return $this;
     }
 
+    public  function isRequired(){return $this->required;}
+
     
 
 

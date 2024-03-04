@@ -11,29 +11,35 @@ class Form
 
         $op=(count($data)==0?"Add":"Update"). " ".$sender;
 
-        $actionURL= APP_URL."/".$sender."/save/".(count($data)==0?"new":$data['id']);
+        $actionURL= Router::resource($sender)->operation("save")->arg(count($data)==0?"new":$data['id'])->url();
 
         $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
         $cols= $f->format($this->cols);
 
 
         $html='
-        <form class="ui form" style="padding:1rem" method="post" action="'. $actionURL .'">
-            <h1 class="ui dividing header"> '.$op.'</h1>
+        <form class="ui form responsive" style="padding:1rem" method="post" action="'. $actionURL .'">
+            <h1 class="ui dividing header"> '.$op.'</h1><div class="ui error message"></div>
+            
             <div class="ui container">
                 <section class="ui '.$cols.' column grid">';
         echo $html;
                     foreach ($this->schema as $elem){
-                        $elem->render($data);
+                        if ($elem instanceof Heading)
+                            $elem->render();
+                        else
+                            $elem->render($data);
                     }
         $html=' </section>
             </div>
             <div class="ui divider"></div>
             <button type="submit" class="red ui button" style="margin-right: 0.5rem"> '.$op.'</button>
-            <button class="button ui" style="">Cancel</button>
+            <a href="javascript:history.go(-1)" class="button ui" style="">Cancel</a>
+            
             </form>
        ';
         echo $html;
+
     }
 
 

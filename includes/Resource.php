@@ -7,9 +7,14 @@ class Resource
 
     protected static string | null $pluralLabel="Entities";
 
-    protected static string | null $icon= "fa fa-list";
+    protected static string | null $icon= "list";
 
     protected static int | null $order =1;
+
+    public static function getIcon(){return get_called_class()::$icon;}
+    public static function getSingleLabel(){return get_called_class()::$singleLabel;}
+    public static function getPluralLabel(){return get_called_class()::$pluralLabel;}
+    public static function getOrder(){return get_called_class()::$order;}
 
     protected static function form()
     {
@@ -21,14 +26,15 @@ class Resource
         return Table::make();
     }
 
-    public static function render($uri)
+    public static function render(Router $router)
     {
 
-        $sender= ($uri[2])??'';
-        $operation= $uri[3]??'';
-        $arg= $uri[4]??'';
+        $sender= $router->getResource();
+        $operation= $router->getOperation();
+        $arg= $router->getArg();
+        $term= $router->getparams()["term"]??"";
 
-        $term = $_GET("term")??"";
+
 
         $controller= new Controller($sender);
 
@@ -45,15 +51,25 @@ class Resource
         }
 
         if($operation=="save"){
+
+            //die(var_dump($_POST));
+
+            foreach ($_POST as $key=>$p){
+                if (is_array($_POST[$key])){
+                    $_POST[$key]=implode(",",array_values($_POST[$key]));
+                }
+            }
+
+            if (isset($_POST['password'])){
+                $_POST['password']=password_hash($_POST['password'], PASSWORD_DEFAULT);
+            }
             $controller->updateIfFound($_POST,$arg);
-            while (ob_get_status()) {ob_end_clean();}
-            header("Location: ".APP_URL."/".$sender."/show/all");
-            exit();
+            $router->operation()->arg()->goto();
         }
 
 
 
-        $sender::form()->render($sender,$arg=="new"?[]:$controller->getByID($sender,$arg));
+        $sender::form()->render($sender,$arg=="new"?[]:$controller->getByID($arg));
 
         /*if ($arg=="new"){
             //phone/add/new
@@ -89,10 +105,12 @@ class Resource
 
 
 
+
+
     protected static function migrate():void{
         $sender= get_called_class();
         $fields=array();
-        foreach ($sender::form()->getSchema() as $field) $fields[]=$field->sql();
+        foreach ($sender::form()->getSchema() as $field) if ($field->sql()!="") $fields[]=$field->sql();
         //die("fff");
         $last_migration= DB()->getLastMigration($sender);
         $current_migration=DB()->structure($sender,$fields);
@@ -103,6 +121,8 @@ class Resource
             DB()->create($sender,$fields);
             DB()->addMigration($sender,$current_migration);
         }
+
+
 
     }
 

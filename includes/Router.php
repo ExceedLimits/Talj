@@ -3,62 +3,119 @@
 
 class Router
 {
-    public static function contentToRender() : void
+    protected string $resource = "Resource";
+    protected string $operation = "show";
+    protected string $arg = "1";
+    protected array $params=[];
+
+    public static function resource($sender): self
     {
+        return new self($sender);
+    }
+
+    public static function fromURI($uri): self
+    {
+        $uriBits = explode('/', $uri);
+        $router= new self($uriBits[2]??'');
+
+        $router->operation= $uriBits[3]??'';
+        $router->arg= $uriBits[4]??'';
+        if (strpos($router->arg,"?")>-1){
+            $lastBits=explode("?",$router->arg);
+            $router->arg=$lastBits[0];
+            foreach (explode("&",$lastBits[1]) as $ps){
+                $router->params[explode("=",$ps)[0]]=explode("=",$ps)[1];
+            }
+
+        }
+
+        return $router;
+    }
+
+    public function getResource(){return $this->resource;}
+    public function getOperation(){return $this->operation;}
+    public function getArg(){return $this->arg;}
+    public function getparams(){return $this->params;}
+
+    public function __construct($sender)
+    {
+        $this->resource = $sender;
+        return $this;
+    }
+
+    public function operation($operation="show"): self
+    {
+        $this->operation = $operation;
+        return $this;
+    }
+
+    public function arg($arg="1"): self
+    {
+        $this->arg = $arg;
+        return $this;
+    }
+
+    public function params($params=[]): self
+    {
+        $this->params = $params;
+        return $this;
+    }
+
+    public function goto(){
+        while (ob_get_status()) {ob_end_clean();}
+        header("Location: ".$this->url());
+        exit();
+    }
+
+    public function url(): string
+    {
+        $p="";
+        if ($this->params!=[]) $p="?".implode("&",$this->params);
+        return trim(APP_URL . "/" . $this->resource . "/" . $this->operation . "/" . $this->arg . $p,"/");
+    }
+
+    public function addNew(): string
+    {
+        return APP_URL . "/" . $this->resource . "/add/new";
+    }
+
+
+    /*public static function contentToRender(): void
+    {
+
         $path_info = $_SERVER['REQUEST_URI'] ?? '/';
-        $uri= explode('/', $path_info);
-
-/*
-
-        $resource= ucfirst($uri[2])??'';
-        $operation= $uri[3]??'';
-        $arg= $uri[4]??'';*/
+        $query = $_SERVER['REDIRECT_QUERY_STRING'] ?? '';
+        $path_info = trim(str_replace($query, '', $path_info), "?");
+        $uri = explode('/', $path_info);
 
 
-        /*if ($resource=="Actions"){
-            var_dump(CURRENT_PAGE);
-        }*/
+
+
 
         //if ($resource=="Login")
         if (false)
             include "layout\login.php";
         else
-            call_user_func(array("Resource","render"),$uri);
-    }
-
-    /*private static function getURI() : array
-    {
-        $path_info = $_SERVER['PATH_INFO'] ?? '/';
-        return explode('/', $path_info);
-    }
-
-    private static function processURI() : array
-    {
-        $controllerPart = self::getURI()[0] ?? '';
-        $methodPart = self::getURI()[1] ?? '';
-        $numParts = count(self::getURI());
-        $argsPart = [];
-        for ($i = 2; $i < $numParts; $i++) {
-            $argsPart[] = self::getURI()[$i] ?? '';
-        }
-
-        //Let's create some defaults if the parts are not set
-        $controller = !empty($controllerPart) ?
-            '\Controllers\\'.$controllerPart.'Controller' :
-            '\Controllers\HomeController';
-
-        $method = !empty($methodPart) ?
-            $methodPart :
-            'index';
-
-        $args = !empty($argsPart) ?
-            $argsPart :
-            [];
-
-        return [
-            'controller' => $controller,
-            'method' => $method,
-            'args' => $args
-        ];
+            call_user_func(array("Resource", "render"), $uri);
     }*/
+
+    public static function getAsset($path): void
+    {
+        echo ASSET_URL . $path;
+    }
+
+    public static function getCSSAsset($lib): void
+    {
+        echo '<link href="' . ASSET_URL . 'css/' . $lib . '" rel="stylesheet">';
+    }
+
+    public static function getFontAsset($lib): void
+    {
+        echo '<link href="' . ASSET_URL . 'fonts/' . $lib . '" rel="stylesheet">';
+    }
+
+    public static function getJSAsset($lib): void
+    {
+        echo '<script src="' . ASSET_URL . 'js/' . $lib . '"></script>';
+    }
 }

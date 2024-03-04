@@ -1,7 +1,4 @@
 <?php
-require_once("includes\autoloader.php");
-require_once("includes\Router.php");
-
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 define('BASE_PATH', (dirname(__FILE__)));
@@ -15,5 +12,17 @@ const DB_HOST='localhost';
 const DB_NAME=APP_NAME;
 const DB_USER="root";
 const DB_PASSWORD="";
+
+
+
+
+include ("includes\db.php");
+include ("includes\autoloader.php");
+include ("includes\Router.php");
+
+function DB(){
+    return new db(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+}
+
 
 

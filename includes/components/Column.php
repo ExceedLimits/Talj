@@ -38,6 +38,10 @@ class Column
         return $this->name;
     }
 
+    protected function xss_clean($string){
+        return ($string)?htmlspecialchars($string, ENT_QUOTES, 'UTF-8'):"";
+    }
+
 
     public function columnSpan($span=1) {
         $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);

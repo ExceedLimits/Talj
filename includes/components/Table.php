@@ -11,6 +11,7 @@ class Table
     public static function make() {return new self();}
     public function render($sender,$page,$term="")
     {
+        $router=Router::resource($sender);
         $controller= new Controller($sender);
         $filters=array();
         foreach ($this->schema as $col){
@@ -20,21 +21,20 @@ class Table
         $total= $controller->getTotalCount($term,$filters);
 
 
-
         //if ($headers==[]) $headers= array_keys($data[0]);
         echo '
             <div class="ui borderless menu">
                 <div class="item">
-                <h1 class="ui header">'.$sender::$pluralLabel.'</h1>
+                <h1 class="ui header">'.$sender::getPluralLabel().'</h1>
                 </div>
                 <div class="item">
-                <a href="'.APP_URL.'/'.$sender.'/add/new'.'" class="ui red button right"><i class="icon plus"></i>New '.$sender::$singleLabel.'</a>
+                <a href="'.$router->addNew().'" class="ui red button right"><i class="icon plus"></i>New '.$sender::getSingleLabel().'</a>
                 </div>
                 <div class="item right">
-                    <form action="#">
+                    <form method="get" action="'.$router->url().'">
                         <div class="ui mini action input">
-                            <input type="text" placeholder="Search..." />
-                            <button class="ui mini icon button">
+                            <input id="term" name="term" type="text" placeholder="Search..." value="'.$term.'"/>
+                            <button type="submit" class="ui mini icon button">
                                 <i class=" search icon"></i>
                             </button>
                         </div>
@@ -42,6 +42,7 @@ class Table
                 </div>                
             </div>
         ';
+        if ($data==[]) {echo "<h1 class='ui header' style='text-align: center'>Nothing to show Here</h1>";return;}
         echo '<table class="ui collapsing red table">';
             echo '<thead>';
 
@@ -53,9 +54,12 @@ class Table
             echo '<tbody>';
                 foreach ($data as $row){
                     echo '<tr class="center aligned">';
-                        foreach ($this->schema as $col){echo '<td>'; echo xss_clean($row[$col->getName()]); echo '</td>';}
+                    //die(var_dump($this->schema));
+                        foreach ($this->schema as $col){
+                            $col->render($row[$col->getName()]);
+                        }
                         echo '<td>';
-                            echo '<a href="'.APP_URL."/".$sender."/edit/".$row['id'].'"><i class="edit icon"></i></a>';
+                            echo '<a href="'.$router->operation("edit")->arg($row['id'])->url().'"><i class="edit icon"></i></a>';
                             echo '<a href="#" class="del-btn" data-id="'.$row['id'].'" id="del-btn-'.$row['id'].'"><i class="delete red icon"></i></a>';
                         echo '</td>';
                     echo '</tr>';
@@ -74,7 +78,7 @@ class Table
                           Nope
                         </div>
                         <div class="ui green inverted ok button">
-                          <a href="'.APP_URL."/".$sender."/delete/".$row['id'].'">
+                          <a href="'.$router->operation("delete")->arg($row['id'])->url().'">
                           <i class="checkmark icon"></i>
                           Yah
                           </a>
@@ -87,13 +91,16 @@ class Table
             echo '<tfoot><tr><th colspan="5">';
             //pagination links
 
+            $params= $term==""?[]:["term"=>$term];
+
             if ($total < $this->pageSize) echo "";
             $total_pages = ceil($total / $this->pageSize);
+
             $prev = ($page - 1);
             $next = ($page + 1);
             $pagination='<div class="ui right floated pagination menu">';
             if ($page>1){
-                $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$prev.'"><i class="icon small chevron left"></i> Previous</a> ';
+                $pagination .= '<a class="item" href="'.$router->operation()->arg($prev)->params($params)->url().'"><i class="icon small chevron left"></i> Previous</a> ';
             }
             for($i = 1; $i <= $total_pages; $i++)
             {
@@ -103,12 +110,12 @@ class Table
                 }
                 else
                 {
-                    $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$i.'">'.$i.'</a>';
+                    $pagination .= '<a class="item" href="'.$router->operation()->arg($i)->params($params)->url().'">'.$i.'</a>';
                 }
             }
             if($page < $total_pages)
             {
-                $pagination .= '<a class="item" href="'.APP_URL.'/'.$sender.'/show/'.$next.'"> Next <i class="icon small chevron right"></i></a>';
+                $pagination .= '<a class="item" href="'.$router->operation()->arg($next)->params($params)->url().'"> Next <i class="icon small chevron right"></i></a>';
             }
 
             $pagination.='</div>';
@@ -137,4 +144,6 @@ class Table
     {
         return $this->pageSize;
     }
+
+
 }

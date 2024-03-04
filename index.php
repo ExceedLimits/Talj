@@ -30,8 +30,8 @@ foreach ($iterator as $fileinfo) {
 
     <?php
         //getCSSAsset("cutestrap.css");
-        getCSSAsset("app.css");
-        getCSSAsset("semantic.min.css");
+        Router::getCSSAsset("app.css");
+        Router::getCSSAsset("semantic.min.css");
 
         //getFontAsset("font-awesome/css/font-awesome.min.css");
 
@@ -41,25 +41,13 @@ foreach ($iterator as $fileinfo) {
 </head>
 
 <body style="padding: 1rem">
-<div class="ui container" >
-    <?php require_once("layout/header.php");?>
-    <div class="ui grid" style="padding: 0.5rem">
-        <div class="column four wide">
-            <?php
-            if (true){//if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true){
-                require_once("layout/sidebar.php");
-            }
-            ?>
-        </div>
-        <div class="column twelve wide">
-            <?php Router::contentToRender();?>
-        </div>
-    </div>
+<div class="ui " >
+    <?php include "layout/content.php"?>
 </div>
 <?php
-getJSAsset("jquery.min.js");
-getJSAsset("semantic.min.js");
-getJSAsset("app.js");
+Router::getJSAsset("jquery.min.js");
+Router::getJSAsset("semantic.min.js");
+Router::getJSAsset("app.js");
 ?>
 
 </body>

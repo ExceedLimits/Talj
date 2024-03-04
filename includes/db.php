@@ -54,6 +54,10 @@ class db {
       return $this->query("select * from ".$tbl." where id=".$id)->fetchArray();
     }
 
+    public function count($tbl){
+        return $this->query("select count(*) as c from ".$tbl)->fetchArray()["c"];
+    }
+
     public function update($tbl,$data,$id){
         $updates=array();
         foreach ($data as $key=>$val) $updates[]= $key."=".($val==""?"''":("'".$val."'"));
@@ -61,11 +65,12 @@ class db {
     }
 
     public function delete($tbl,$id){
+        var_dump("delete from ".$tbl." where id=".$id);
         $this->query("delete from ".$tbl." where id=".$id);
     }
 
     public function query($query) {
-
+        //var_dump($query);
         if (!$this->query_closed) {
             $this->query->close();
         }
