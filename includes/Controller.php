@@ -5,7 +5,7 @@ class Controller
     protected $sender="Resource";
     public function __construct($sender)
     {
-        $this->sender=strtolower($sender);
+        $this->sender=($sender);
     }
 
     protected function getWhere($term,$filters=[]){

@@ -17,7 +17,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $password = trim($_POST["password"]);
 
-    $user = DB()->query("select * from user where username='" . $username . "'")->fetchArray();
+    $user = DB()->query("select * from User where username='" . $username . "'")->fetchArray();
 
 
     if ($user == []) {

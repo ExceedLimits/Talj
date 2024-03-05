@@ -12,7 +12,7 @@
                  <div class="content">
                    <i class="right floated icon red huge '.$sender::getIcon().'"></i>
                   <div class=" header huge" style="font-size: xx-large">
-                    '.DB()->count(strtolower($sender)).'
+                    '.DB()->count(($sender)).'
                   </div>
                   <div class="meta red header" style="font-size: large;color: #E2013D">
                     '.$sender::getPluralLabel().'

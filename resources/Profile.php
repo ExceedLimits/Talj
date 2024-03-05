@@ -63,18 +63,41 @@ class Profile extends Resource
 
     public static function form()
     {
-        $fields=array();
+
         $hk=array();
-        $fields[]=TextInput::make("p_name")->label("Profile Name")->required();
-        $fields[]=Select::make("language")->label("Language")->required()->options(self::$langs);
-        $fields[]=Select::make("pb")->label("Phonebooks")->required()->multiple()->columnSpan(2)->relationship("Phonebook","f_name");
+        $sd=array();
+        $cs=array();
 
         foreach (self::$hard_keys as $hkey){
             $hk[]=Select::make("dkey_".$hkey)->label(ucfirst($hkey))->options(array_flip(self::$actions));
             $hk[]=TextInput::make("dkey_".$hkey."_extra")->label(ucfirst($hkey)." Extra Info.");
         }
-        $fields[]=Group::make("hk")->label("Functions - Hard Keys")->schema($hk)->columns(2)->columnSpan(2);
-        return Form::make()->schema($fields)->columns(2);
+
+        for($i=1;$i<=30;$i++){
+            $sd[]=TextInput::make("sd_".$i)->label("Button: ".ucfirst($i));
+        }
+        $sd[]=TextInput::make("sd_zero")->label("Button: 0");
+        $sd[]=TextInput::make("sd_pound")->label("Button: #");
+        $sd[]=TextInput::make("sd_star")->label("Button: *");
+
+        for($i=1;$i<=12;$i++){
+            $cs[]=TextInput::make("cs_".$i)->label("Button: ".ucfirst($i));
+            $cs[]=TextInput::make("cs_".$i."_extra")->label("Button: ".ucfirst($i)." Extra Info.");
+
+        }
+
+
+        return Form::make()->schema([
+            TextInput::make("p_name")->label("Profile Name")->required(),
+            Select::make("language")->label("Language")->required()->options(self::$langs),
+            Select::make("pb")->label("Phonebooks")->required()->multiple()->columnSpan(2)->relationship("Phonebook","f_name"),
+            Tabs::make("Functions")->tabs([
+                Group::make("hk")->label("Functions - Hard Keys")->schema($hk)->columns(2)->columnSpan(2),
+                Group::make("cs")->label("Functions - Context Sensitive Keys")->schema($cs)->columns(2)->columnSpan(2),
+                Group::make("sd")->label("Functions - Speed Dial")->schema($sd)->columns(4)->columnSpan(2),
+            ])->columnSpan(2)
+
+        ])->columns(2);
     }
 
     protected static function table()
@@ -99,38 +122,41 @@ class Profile extends Resource
     protected static function createXML($profile){
         $file = 'assets/xml/template.xml';
         $xml = file_get_contents($file);
-        $text = str_replace('ST_LANG',$profile['language'],$xml);
 
-        $funcsxml="";
+        $replacements=array();
 
-        $innerData=[];
-        foreach (explode("|",$profile["hk"]) as $one){
-            if ($one=="") continue;
-            $innerData[explode(':',$one)[0]."_grp_hk"]=explode(":",$one)[1];
-        }
+        $replacements["ST_LANG"]=$profile['language'];
 
+        $replacements["HARD_KEYS"]="";
+        $innerData=self::getDataArray($profile["hk"]);
         foreach ($innerData as $key=>$data){
             if (str_ends_with($key,"extra_grp_hk")) continue;
             $k=str_replace("_grp_hk","",$key);
             if (strpos($k,"dkey")>-1) {
-                $funcsxml.="<".$k.' perm="">'.trim($data." ".$innerData[$k."_extra_grp_hk"]).'</'.$k.'>';
+                $replacements["HARD_KEYS"].="<".$k.' perm="">'.trim($data." ".$innerData[$k."_extra_grp_hk"]).'</'.$k.'>';
             }
-
         }
 
-        $text = str_replace('HARD_KEYS',$funcsxml,$text);
-
-        $tbook= explode('<tbook e="2">',$text);
-        $tbookitem= trim(explode('</tbook>',$tbook[1])[0]);
-
-        $tbooks="";
+        $tbookitem='<item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>';
+        $replacements["PHONE_BOOK"]='<tbook e="2">';
         foreach (DB()->getIn("phonebook",$profile['pb']) as $phonebook){
             foreach(DB()->getIn("contact",$phonebook['id']) as $contact)
-                    $tbooks.= str_replace(["TB_NX","TB_NUMX"],[$contact['f_name'],$contact['num']],$tbookitem);
+                $replacements["PHONE_BOOK"].= str_replace(["TB_NX","TB_NUMX"],[$contact['f_name'],$contact['num']],$tbookitem);
         }
-        $text = str_replace($tbookitem,$tbooks,$text);
+        $replacements["PHONE_BOOK"].='</tbook>';
+
+        $text = str_replace(array_keys($replacements),array_values($replacements),$xml);
 
         file_put_contents($profile['p_name'].".xml", $text);
+    }
+
+    protected static function getDataArray($s){
+        $innerData=[];
+        foreach (explode("|",$s) as $one){
+            if ($one=="") continue;
+            $innerData[explode(':',$one)[0]."_grp_hk"]=explode(":",$one)[1];
+        }
+        return $innerData;
     }
 
 

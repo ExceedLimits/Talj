@@ -3,8 +3,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 define('BASE_PATH', (dirname(__FILE__)));
 define('CURRENT_PAGE', basename($_SERVER['REQUEST_URI']));
+define('ROOT',dirname(__FILE__));
 
-const APP_NAME = 'Talj';
+const APP_NAME = 'PMS';
 const APP_URL= 'http://localhost/Talj';
 const ASSET_URL= APP_URL.'/assets/';
 
@@ -14,11 +15,11 @@ const DB_USER="root";
 const DB_PASSWORD="";
 
 
+include(ROOT.'/includes/autoloader.php');
 
+include(ROOT.'/includes/db.php');
+include(ROOT.'/includes/Router.php');
 
-include ("includes\db.php");
-include ("includes\autoloader.php");
-include ("includes\Router.php");
 
 function DB(){
     return new db(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);

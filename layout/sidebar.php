@@ -1,4 +1,4 @@
-<div class="ui large inverted vertical visible pointing menu" style="height: 90vh;width: 100%">
+<div class="ui sticky large inverted vertical visible pointing menu" style="height: 90vh;width: 100%">
     <?php
         echo '<a class="item '.(("dashboard"==$router->getResource())?"active":"").'" href="'.Router::resource("dashboard")->operation('')->arg('')->url().'"><div><i class="icon tachometer alternate"></i> Dashboard</div></a>';
 
@@ -14,7 +14,4 @@
     ksort($resources);
     foreach ($resources as $r){echo $r;}
     ?>
-
-
-
 </div>

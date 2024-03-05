@@ -3,6 +3,10 @@ $(document).ready(function(){
         .dropdown()
     ;
 
+    $(document).ready(function(){
+        $('.demo.menu .item').tab({history:false});
+    });
+
     $('.message .close')
         .on('click', function() {
             $(this)

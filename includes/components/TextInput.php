@@ -9,7 +9,7 @@ class TextInput extends Component
    {
        $val=array_key_exists($this->name,$data)?$data[$this->name]:"";
        if ($this->type=="password") $val="";
-       $style="";
+       $style="padding:0.5rem";
        //if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
        $html='
        <div ></div>      

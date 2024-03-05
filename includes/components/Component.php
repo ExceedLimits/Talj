@@ -41,6 +41,10 @@ class Component
         return $this;
     }
 
+    public function getLabel() {
+        return $this->label;
+    }
+
     public function columnSpan($span=1) {
         //$f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
         $this->colSpan= ($span);

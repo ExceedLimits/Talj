@@ -13,7 +13,7 @@ class Select extends Component
         //$this->selected=array_key_exists($this->name,$data)?$data[$this->name]:"";
         $dataval= array_key_exists($this->name,$data)?$data[$this->name]:"";
         $name= ($this->multi)?$this->name."[]":$this->name;
-        $style="";
+        $style="padding:0.5rem";
         //if ($this->colSpan!=0) $style.="grid-column:span ".$this->colSpan;
         $options="";
         foreach ($this->opts as $key=>$value){

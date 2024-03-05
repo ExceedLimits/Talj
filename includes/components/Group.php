@@ -19,7 +19,7 @@ class Group extends Component
         }
 
         $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-        $totalcols= ceil(16/($this->cols));
+        $totalcols= floor(16/($this->cols));
 
         $html='
         <div class="ui segments " style="padding:1rem;width: 100%">

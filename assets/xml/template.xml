@@ -22,7 +22,7 @@
     </functionKeys>
 
     <!-- Phone directory entries locally stored on the phone -->
-
+    PHONE_BOOK
     <tbook e="2">
         <item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>
     </tbook>
