@@ -180,6 +180,12 @@ class Profile extends Resource
         $text = str_replace(array_keys($replacements),array_values($replacements),$xml);
 
         file_put_contents($profile['p_name'].".xml", $text);
+
+        //update related phones
+        $data= file_get_contents("".$profile["p_name"].".xml");
+        foreach (DB()->query("select * from Phone where profile =".$profile["id"])->fetchAll() as $phone)
+        file_put_contents("snomD865/".$phone["mac"].".xml",$data);
+
     }
 
     protected static function getDataArray($s){

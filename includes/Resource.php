@@ -51,7 +51,7 @@ class Resource
         //phone/delete/1
         if ($operation=="delete"){
             $controller->delete($arg);
-            return;
+            $router->operation()->arg()->goto();
         }
 
         if($operation=="save"){
@@ -70,6 +70,7 @@ class Resource
                     unset($_POST[$key]);
                 }
             }
+
 
 
 

@@ -43,11 +43,11 @@ class Phone extends Resource
 
         if ($id!="new") $phone= DB()->get("Phone",$id); else $phone=$data;
         $profile= DB()->get("Profile",$phone['profile']);
-        //die(var_dump(mkdir("../snomD865")));
-        if (!is_dir("snomD865")) {  mkdir("snomD865");}
-        //die(var_dump("../".$profile["p_name"].".xml"));
+
+        if (!is_dir("snomD865")) {mkdir("snomD865");}
+
         $data= file_get_contents("".$profile["p_name"].".xml");
-        //die($data);
+
         file_put_contents("snomD865/".$phone["mac"].".xml",$data);
 
     }
