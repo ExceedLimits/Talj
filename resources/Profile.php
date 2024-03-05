@@ -67,6 +67,7 @@ class Profile extends Resource
         $hk=array();
         $sd=array();
         $cs=array();
+        $lk=array();
 
         foreach (self::$hard_keys as $hkey){
             $hk[]=Select::make("dkey_".$hkey)->label(ucfirst($hkey))->options(array_flip(self::$actions));
@@ -81,9 +82,13 @@ class Profile extends Resource
         $sd[]=TextInput::make("sd_star")->label("Button: *");
 
         for($i=1;$i<=12;$i++){
-            $cs[]=TextInput::make("cs_".$i)->label("Button: ".ucfirst($i));
+            $cs[]=Select::make("cs_".$i)->label("Button: ".ucfirst($i))->options(array_flip(self::$actions));
             $cs[]=TextInput::make("cs_".$i."_extra")->label("Button: ".ucfirst($i)." Extra Info.");
+        }
 
+        for($i=1;$i<=40;$i++){
+            $lk[]=Select::make("lk_".$i)->label("Button: ".ucfirst($i))->options(array_flip(self::$actions));
+            $lk[]=TextInput::make("lk_".$i."_extra")->label("Button: ".ucfirst($i)." Extra Info.");
         }
 
 
@@ -95,6 +100,8 @@ class Profile extends Resource
                 Group::make("hk")->label("Functions - Hard Keys")->schema($hk)->columns(2)->columnSpan(2),
                 Group::make("cs")->label("Functions - Context Sensitive Keys")->schema($cs)->columns(2)->columnSpan(2),
                 Group::make("sd")->label("Functions - Speed Dial")->schema($sd)->columns(4)->columnSpan(2),
+                Group::make("lk")->label("Functions - Line Keys")->schema($lk)->columns(2)->columnSpan(2),
+
             ])->columnSpan(2)
 
         ])->columns(2);
@@ -113,7 +120,7 @@ class Profile extends Resource
     {
 
         parent::afterSave($id,$data);
-        if ($id!="new") $profile= DB()->get("profile",$id); else $profile=$data;
+        if ($id!="new") $profile= DB()->get("Profile",$id); else $profile=$data;
         self::createXML($profile);
 
 
@@ -137,13 +144,38 @@ class Profile extends Resource
             }
         }
 
+        $replacements["CONTEXT_KEYS"]="";
+        $innerData=self::getDataArray($profile["cs"]);
+        foreach ($innerData as $key=>$data){
+            if (str_ends_with($key,"extra_grp_hk")) continue;
+            $k=str_replace("_grp_hk","",$key);
+            if (strpos($k,"cs")>-1) {
+                $replacements["CONTEXT_KEYS"].='<context_key idx="'.str_replace("cs_","",$k).'" perm="">'.trim($data." ".$innerData[$k."_extra_grp_hk"]).'</context_key>';
+            }
+        }
+
+
+
+        $replacements["SPEED_DAIL"]="";
+        $innerData=self::getDataArray($profile["sd"]);
+        //die(var_dump($innerData));
+        foreach ($innerData as $key=>$data){
+            //if (str_ends_with($key,"extra_grp_hk")) continue;
+            $k=str_replace("sd_","",str_replace("_grp_hk","",$key));
+            if ($k=="zero") $k="0";if ($k=="pound") $k="#";if ($k=="star") $k="*";
+            $replacements["SPEED_DAIL"].='<speed idx="'.$k.'" perm="">'.$innerData[$key].'</speed>';
+
+        }
+
         $tbookitem='<item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>';
         $replacements["PHONE_BOOK"]='<tbook e="2">';
-        foreach (DB()->getIn("phonebook",$profile['pb']) as $phonebook){
-            foreach(DB()->getIn("contact",$phonebook['id']) as $contact)
+        foreach (DB()->getIn("Phonebook",$profile['pb']) as $phonebook){
+            foreach(DB()->getIn("Contact",$phonebook['id']) as $contact)
                 $replacements["PHONE_BOOK"].= str_replace(["TB_NX","TB_NUMX"],[$contact['f_name'],$contact['num']],$tbookitem);
         }
         $replacements["PHONE_BOOK"].='</tbook>';
+
+        //die(var_dump($replacements));
 
         $text = str_replace(array_keys($replacements),array_values($replacements),$xml);
 

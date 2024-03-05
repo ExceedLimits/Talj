@@ -40,8 +40,8 @@ class Select extends Component
 
     public function relationship($resource,$label){
         $this->opts=[];
-        if (DB()->tableFound(strtolower($resource))){
-            $ops= DB()->query("select id,".$label." from ".strtolower($resource))->fetchAll();
+        if (DB()->tableFound(($resource))){
+            $ops= DB()->query("select id,".$label." from ".($resource))->fetchAll();
             foreach ($ops as $op) $this->opts[$op["id"]]=$op[$label];
         }
 

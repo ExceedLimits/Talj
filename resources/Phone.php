@@ -41,8 +41,8 @@ class Phone extends Resource
     {
         parent::afterSave($id,$data);
 
-        if ($id!="new") $phone= DB()->get("phone",$id); else $phone=$data;
-        $profile= DB()->get("profile",$phone['profile']);
+        if ($id!="new") $phone= DB()->get("Phone",$id); else $phone=$data;
+        $profile= DB()->get("Profile",$phone['profile']);
         //die(var_dump(mkdir("../snomD865")));
         if (!is_dir("snomD865")) {  mkdir("snomD865");}
         //die(var_dump("../".$profile["p_name"].".xml"));

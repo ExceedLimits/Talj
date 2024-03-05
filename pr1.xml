@@ -6,18 +6,17 @@
 
         <update_policy>auto_update</update_policy>
         <phone_name perm="R">Snom-D385</phone_name> <!-- hostname of the phone. If set, the hostname is used to sign syslog packages and as the title of the WUI -->
-        <language perm="">Deutsch</language>
-        <web_language perm="">Deutsch</web_language>
+        <language perm="">English</language>
+        <web_language perm="">English</web_language>
         <date_us_format perm="">off</date_us_format>
         <dialnumber_us_format perm="">off</dialnumber_us_format>
         <timezone>GER+1</timezone>
         <tone_scheme>GER</tone_scheme>
-        <dkey_retrieve perm="">keyevent F_SETTINGS 1</dkey_retrieve>
-        <dkey_conf perm="">keyevent F_DND 5555</dkey_conf>
-        <dkey_directory perm=""></dkey_directory>
-        <dkey_transfer perm=""></dkey_transfer>
-        <dkey_redial perm=""></dkey_redial>
-        <dkey_hold perm=""></dkey_hold>
+        <dkey_retrieve perm=""></dkey_retrieve><dkey_conf perm=""></dkey_conf><dkey_directory perm=""></dkey_directory><dkey_transfer perm=""></dkey_transfer><dkey_redial perm=""></dkey_redial><dkey_hold perm=""></dkey_hold>
+
+        <context_key idx="1" perm=""></context_key><context_key idx="2" perm=""></context_key><context_key idx="3" perm=""></context_key><context_key idx="4" perm=""></context_key><context_key idx="5" perm=""></context_key><context_key idx="6" perm=""></context_key><context_key idx="7" perm=""></context_key><context_key idx="8" perm=""></context_key><context_key idx="9" perm=""></context_key><context_key idx="10" perm=""></context_key><context_key idx="11" perm=""></context_key><context_key idx="12" perm=""></context_key>
+
+        <speed idx="1" perm=""></speed><speed idx="2" perm=""></speed><speed idx="3" perm=""></speed><speed idx="4" perm=""></speed><speed idx="5" perm=""></speed><speed idx="6" perm=""></speed><speed idx="7" perm=""></speed><speed idx="8" perm=""></speed><speed idx="9" perm=""></speed><speed idx="10" perm=""></speed><speed idx="11" perm=""></speed><speed idx="12" perm=""></speed><speed idx="13" perm=""></speed><speed idx="14" perm=""></speed><speed idx="15" perm=""></speed><speed idx="16" perm=""></speed><speed idx="17" perm=""></speed><speed idx="18" perm=""></speed><speed idx="19" perm=""></speed><speed idx="20" perm=""></speed><speed idx="21" perm=""></speed><speed idx="22" perm=""></speed><speed idx="23" perm=""></speed><speed idx="24" perm=""></speed><speed idx="25" perm=""></speed><speed idx="26" perm=""></speed><speed idx="27" perm=""></speed><speed idx="28" perm=""></speed><speed idx="29" perm=""></speed><speed idx="30" perm=""></speed><speed idx="0" perm=""></speed><speed idx="#" perm=""></speed><speed idx="*" perm=""></speed>
     </phone-settings>
 
     <!-- Here we define the functions and values of the fkeys on the phone -->
@@ -27,8 +26,6 @@
     </functionKeys>
 
     <!-- Phone directory entries locally stored on the phone -->
+    <tbook e="2"><item context="active" type="none" fav="false" mod="true" index="0"><name>Danish</name><number>5040562332</number><number_type>extension</number_type><birthday>00.00.99</birthday></item></tbook>
 
-    <tbook e="2">
-        <item context="active" type="none" fav="false" mod="true" index="0"><name>Danish2</name><number>504054462332</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>
-    </tbook>
 </settings>

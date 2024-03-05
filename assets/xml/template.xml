@@ -13,17 +13,17 @@
         <timezone>GER+1</timezone>
         <tone_scheme>GER</tone_scheme>
         HARD_KEYS
+
+        CONTEXT_KEYS
+
+        SPEED_DAIL
     </phone-settings>
 
     <!-- Here we define the functions and values of the fkeys on the phone -->
 
-    <functionKeys e="2">
-        <fkey idx="FN_IDX" context="active" short_label_mode="icon_text" short_label="" short_default_text="!!$(::)!!$(generate_via_conditional_label_short)" label_mode="icon_text" icon_type="" reg_label_mode="icon_text" ringer="Silent" label="" lp="on" default_text="!!$(::)!!$(generate_via_conditional_label_full)" perm="">FN_VALX</fkey>
-    </functionKeys>
+
 
     <!-- Phone directory entries locally stored on the phone -->
     PHONE_BOOK
-    <tbook e="2">
-        <item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>
-    </tbook>
+
 </settings>

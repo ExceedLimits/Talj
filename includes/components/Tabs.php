@@ -29,7 +29,11 @@ class Tabs extends Component
 
 
     public function sql():string{
-        return "";//$this->name." TEXT ". ($this->required?"":"NOT")." NULL ";
+        $sql=[];
+        foreach ($this->tabs as $tab){
+            $sql[]=$tab->sql();
+        }
+        return implode(",",$sql);//$this->name." TEXT ". ($this->required?"":"NOT")." NULL ";
     }
 
 }
