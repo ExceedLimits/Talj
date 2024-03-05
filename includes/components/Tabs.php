@@ -9,13 +9,16 @@ class Tabs extends Component
     public function render($data=[])
     {
         echo '<div class="ui pointing secondary demo menu">';
+        $active=" active ";
             foreach ($this->tabs as $tab){
-                echo '<a class="item" data-tab="'.$tab->getName().'">'.$tab->getLabel().'</a>';
+                echo '<a class="'.$active.' item" data-tab="'.$tab->getName().'">'.$tab->getLabel().'</a>';
+                $active="vvv";
             }
         echo '</div>';
-
+        $active=" active ";
         foreach ($this->tabs as $tab){
-            echo '<div class="ui tab segment" data-tab="'.$tab->getName().'">';
+            echo '<div class="ui '.$active.' tab segment" data-tab="'.$tab->getName().'">';
+            $active="";
             $tab->render($data);
             echo '</div>';
         }

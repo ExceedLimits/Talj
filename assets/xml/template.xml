@@ -20,7 +20,7 @@
     </phone-settings>
 
     <!-- Here we define the functions and values of the fkeys on the phone -->
-
+    LINE_KEYS
 
 
     <!-- Phone directory entries locally stored on the phone -->

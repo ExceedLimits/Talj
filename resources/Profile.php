@@ -147,10 +147,10 @@ class Profile extends Resource
         $replacements["CONTEXT_KEYS"]="";
         $innerData=self::getDataArray($profile["cs"]);
         foreach ($innerData as $key=>$data){
-            if (str_ends_with($key,"extra_grp_hk")) continue;
-            $k=str_replace("_grp_hk","",$key);
+            if (str_ends_with($key,"extra_grp_cs")) continue;
+            $k=str_replace("_grp_cs","",$key);
             if (strpos($k,"cs")>-1) {
-                $replacements["CONTEXT_KEYS"].='<context_key idx="'.str_replace("cs_","",$k).'" perm="">'.trim($data." ".$innerData[$k."_extra_grp_hk"]).'</context_key>';
+                $replacements["CONTEXT_KEYS"].='<context_key idx="'.str_replace("cs_","",$k).'" perm="">'.trim($data." ".$innerData[$k."_extra_grp_cs"]).'</context_key>';
             }
         }
 
@@ -161,11 +161,22 @@ class Profile extends Resource
         //die(var_dump($innerData));
         foreach ($innerData as $key=>$data){
             //if (str_ends_with($key,"extra_grp_hk")) continue;
-            $k=str_replace("sd_","",str_replace("_grp_hk","",$key));
+            $k=str_replace("sd_","",str_replace("_grp_sd","",$key));
             if ($k=="zero") $k="0";if ($k=="pound") $k="#";if ($k=="star") $k="*";
             $replacements["SPEED_DAIL"].='<speed idx="'.$k.'" perm="">'.$innerData[$key].'</speed>';
 
         }
+
+        $replacements["LINE_KEYS"]="<functionKeys e='2'>";
+        $innerData=self::getDataArray($profile["lk"]);
+        foreach ($innerData as $key=>$data){
+            if (str_ends_with($key,"extra_grp_lk")) continue;
+            $k=str_replace("lk_","",str_replace("_grp_lk","",$key));
+            if (strpos($k,"lk")>-1) {
+                $replacements["LINE_KEYS"].='<fkey idx="'.$k.'" context="active" short_label_mode="icon_text" short_label="" short_default_text="!!$(::)!!$(generate_via_conditional_label_short)" label_mode="icon_text" icon_type="" reg_label_mode="icon_text" ringer="Silent" label="history" lp="on" default_text="!!$(::)!!$(generate_via_conditional_label_full)" perm="">'.trim($data." ".$innerData[$k."_extra_grp_lk"]).'</fkey>';
+            }
+        }
+        $replacements["LINE_KEYS"]="</functionKeys>";
 
         $tbookitem='<item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>';
         $replacements["PHONE_BOOK"]='<tbook e="2">';

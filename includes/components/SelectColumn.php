@@ -19,9 +19,9 @@ class SelectColumn extends Column
                 $html.='<a class="ui image label">'.$this->opts[$v].'</a>';
             }
         }else{
-            $dataarr=DB()->query("select ".$this->resourceLabel." from ".$this->resource. " where id in (".$val.")")->fetchAll();
+            $dataarr=DB()->query("select id,".$this->resourceLabel." from ".$this->resource. " where id in (".$val.")")->fetchAll();
             foreach ($dataarr as $v){
-                $html.='<a class="ui image label"><i class="icon '.$this->resource::getIcon().'"></i>'.$v[$this->resourceLabel].'</a>';
+                $html.='<a href="'.Router::resource($this->resource)->operation("edit")->arg($v['id'])->url().'" class="ui image label"><i class="icon '.$this->resource::getIcon().'"></i>'.$v[$this->resourceLabel].'</a>';
             }
         }
         $html.="</td>";
