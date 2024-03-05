@@ -19,6 +19,7 @@ class Tabs extends Component
         foreach ($this->tabs as $tab){
             echo '<div class="ui '.$active.' tab segment" data-tab="'.$tab->getName().'">';
             $active="";
+            $tab->setLabel("");
             $tab->render($data);
             echo '</div>';
         }

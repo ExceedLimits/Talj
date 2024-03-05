@@ -21,6 +21,8 @@ class Group extends Component
         $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
         $totalcols= floor(16/($this->cols));
 
+
+
         $html='
         <div class="ui segments " style="padding:1rem;width: 100%">
         <div class="ui segment">
@@ -51,6 +53,11 @@ class Group extends Component
     }
     public function columns($cols=1){
         $this->cols=$cols;
+        return $this;
+    }
+
+    public function setLabel($lbl) {
+        $this->label=$lbl;
         return $this;
     }
 

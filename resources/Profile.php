@@ -88,7 +88,9 @@ class Profile extends Resource
 
         for($i=1;$i<=40;$i++){
             $lk[]=Select::make("lk_".$i)->label("Button: ".ucfirst($i))->options(array_flip(self::$actions));
+            $lk[]=TextInput::make("lk_".$i."_lbl")->label("Button: ".ucfirst($i)." Label Text.");
             $lk[]=TextInput::make("lk_".$i."_extra")->label("Button: ".ucfirst($i)." Extra Info.");
+
         }
 
 
@@ -100,7 +102,7 @@ class Profile extends Resource
                 Group::make("hk")->label("Functions - Hard Keys")->schema($hk)->columns(2)->columnSpan(2),
                 Group::make("cs")->label("Functions - Context Sensitive Keys")->schema($cs)->columns(2)->columnSpan(2),
                 Group::make("sd")->label("Functions - Speed Dial")->schema($sd)->columns(4)->columnSpan(2),
-                Group::make("lk")->label("Functions - Line Keys")->schema($lk)->columns(2)->columnSpan(2),
+                Group::make("lk")->label("Functions - Line Keys")->schema($lk)->columns(3)->columnSpan(2),
 
             ])->columnSpan(2)
 
@@ -135,51 +137,52 @@ class Profile extends Resource
         $replacements["ST_LANG"]=$profile['language'];
 
         $replacements["HARD_KEYS"]="";
-        $innerData=self::getDataArray($profile["hk"]);
+        $innerData=self::getDataArray($profile,"hk");
         foreach ($innerData as $key=>$data){
             if (str_ends_with($key,"extra_grp_hk")) continue;
             $k=str_replace("_grp_hk","",$key);
             if (strpos($k,"dkey")>-1) {
-                $replacements["HARD_KEYS"].="<".$k.' perm="">'.trim($data." ".$innerData[$k."_extra_grp_hk"]).'</'.$k.'>';
+                $replacements["HARD_KEYS"].="<".$k.' perm="">'.trim($data." ".$innerData[$k."_extra_grp_hk"]).'</'.$k.'>'."\r\n";
             }
         }
 
         $replacements["CONTEXT_KEYS"]="";
-        $innerData=self::getDataArray($profile["cs"]);
+        $innerData=self::getDataArray($profile,"cs");
         foreach ($innerData as $key=>$data){
             if (str_ends_with($key,"extra_grp_cs")) continue;
             $k=str_replace("_grp_cs","",$key);
             if (strpos($k,"cs")>-1) {
-                $replacements["CONTEXT_KEYS"].='<context_key idx="'.str_replace("cs_","",$k).'" perm="">'.trim($data." ".$innerData[$k."_extra_grp_cs"]).'</context_key>';
+                $replacements["CONTEXT_KEYS"].='<context_key idx="'.str_replace("cs_","",$k).'" perm="">'.trim($data." ".$innerData[$k."_extra_grp_cs"]).'</context_key>'."\r\n";
             }
         }
 
 
 
         $replacements["SPEED_DAIL"]="";
-        $innerData=self::getDataArray($profile["sd"]);
+        $innerData=self::getDataArray($profile,"sd");
         //die(var_dump($innerData));
         foreach ($innerData as $key=>$data){
             //if (str_ends_with($key,"extra_grp_hk")) continue;
             $k=str_replace("sd_","",str_replace("_grp_sd","",$key));
             if ($k=="zero") $k="0";if ($k=="pound") $k="#";if ($k=="star") $k="*";
-            $replacements["SPEED_DAIL"].='<speed idx="'.$k.'" perm="">'.$innerData[$key].'</speed>';
+            $replacements["SPEED_DAIL"].='<speed idx="'.$k.'" perm="">'.$innerData[$key].'</speed>'."\r\n";
 
         }
 
         $replacements["LINE_KEYS"]="<functionKeys e='2'>";
-        $innerData=self::getDataArray($profile["lk"]);
+        $innerData=self::getDataArray($profile,"lk");
         foreach ($innerData as $key=>$data){
             if (str_ends_with($key,"extra_grp_lk")) continue;
+            if (str_ends_with($key,"lbl_grp_lk")) continue;
             $k=str_replace("lk_","",str_replace("_grp_lk","",$key));
-            if (strpos($k,"lk")>-1) {
-                $replacements["LINE_KEYS"].='<fkey idx="'.$k.'" context="active" short_label_mode="icon_text" short_label="" short_default_text="!!$(::)!!$(generate_via_conditional_label_short)" label_mode="icon_text" icon_type="" reg_label_mode="icon_text" ringer="Silent" label="history" lp="on" default_text="!!$(::)!!$(generate_via_conditional_label_full)" perm="">'.trim($data." ".$innerData[$k."_extra_grp_lk"]).'</fkey>';
-            }
+            //if (strpos($k,"lk")>-1) {
+                $replacements["LINE_KEYS"].='<fkey idx="'.$k.'" context="active" short_label_mode="icon_text" short_label="" short_default_text="!!$(::)!!$(generate_via_conditional_label_short)" label_mode="icon_text" icon_type="" reg_label_mode="icon_text" ringer="Silent" label="'.$innerData['lk_'.$k."_lbl_grp_lk"].'" lp="on" default_text="!!$(::)!!$(generate_via_conditional_label_full)" perm="">'.trim($data." ".$innerData[$k."_extra_grp_lk"]).'</fkey>'."\r\n";
+            //}
         }
-        $replacements["LINE_KEYS"]="</functionKeys>";
+        $replacements["LINE_KEYS"].="</functionKeys>";
 
-        $tbookitem='<item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>';
-        $replacements["PHONE_BOOK"]='<tbook e="2">';
+        $tbookitem='<item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>'."\r\n";
+        $replacements["PHONE_BOOK"]='<tbook e="2">'."\r\n";
         foreach (DB()->getIn("Phonebook",$profile['pb']) as $phonebook){
             foreach(DB()->getIn("Contact",$phonebook['id']) as $contact)
                 $replacements["PHONE_BOOK"].= str_replace(["TB_NX","TB_NUMX"],[$contact['f_name'],$contact['num']],$tbookitem);
@@ -199,11 +202,11 @@ class Profile extends Resource
 
     }
 
-    protected static function getDataArray($s){
+    protected static function getDataArray($data,$s){
         $innerData=[];
-        foreach (explode("|",$s) as $one){
+        foreach (explode("|",$data[$s]) as $one){
             if ($one=="") continue;
-            $innerData[explode(':',$one)[0]."_grp_hk"]=explode(":",$one)[1];
+            $innerData[explode(':',$one)[0]."_grp_".$s]=explode(":",$one)[1];
         }
         return $innerData;
     }

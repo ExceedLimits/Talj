@@ -2,6 +2,18 @@
 <settings>
     <phone-settings>
 
+        <!-- Provisioning settings, e.g. active and time period -->
+        <prov_polling_enabled perm="">on</prov_polling_enabled>
+        <prov_polling_mode perm="">rel</prov_polling_mode>
+        <prov_polling_period perm="">10</prov_polling_period>
+        <prov_polling_time perm="">00:00</prov_polling_time>
+        <prov_polling_time_rand_end perm="">00:00</prov_polling_time_rand_end>
+        <action_poll_url perm=""></action_poll_url>
+        <action_poll_mode perm="">rel</action_poll_mode>
+        <action_poll_period perm="">0</action_poll_period>
+        <action_poll_time perm="">00:00</action_poll_time>
+        <action_poll_time_rand_end perm="">00:00</action_poll_time_rand_end>
+
         <!-- General settings, e.g. localisation and update policy -->
 
         <update_policy>auto_update</update_policy>
