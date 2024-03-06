@@ -1,17 +1,6 @@
 <?php
 ob_start();
 require_once("config.php");
-
-$iterator = new DirectoryIterator("resources");
-foreach ($iterator as $fileinfo) {
-    if ($fileinfo->isFile()) {
-        $class = (pathinfo( $fileinfo->getPathname() , PATHINFO_FILENAME));
-        //($class::migrateDn());
-
-        $class::migrate();
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -24,9 +13,7 @@ foreach ($iterator as $fileinfo) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><?php echo APP_NAME; ?></title>
-
-    <title><?php echo APP_NAME; ?></title>
+    <title><?= APP_NAME; ?></title>
 
     <?php
         //getCSSAsset("cutestrap.css");

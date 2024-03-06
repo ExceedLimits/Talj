@@ -13,6 +13,7 @@ class Resource
 
     protected static bool | null $dashboarded=true;
 
+
     public static function getIcon(){return get_called_class()::$icon;}
     public static function getSingleLabel(){return get_called_class()::$singleLabel;}
     public static function getPluralLabel(){return get_called_class()::$pluralLabel;}
@@ -29,6 +30,8 @@ class Resource
     {
         return Table::make();
     }
+
+
 
     public static function render(Router $router)
     {
@@ -99,14 +102,7 @@ class Resource
 
     }
 
-
-
-
-
-
-
-
-    protected static function migrate():void{
+    public static function migrate():void{
         $sender= get_called_class();
         $fields=array();
         foreach ($sender::form()->getSchema() as $field) if ($field->sql()!="") $fields[]=$field->sql();
@@ -120,9 +116,6 @@ class Resource
             DB()->create($sender,$fields);
             DB()->addMigration($sender,$current_migration);
         }
-
-
-
     }
 
 

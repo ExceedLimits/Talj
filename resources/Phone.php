@@ -20,6 +20,7 @@ class Phone extends Resource
                 TextInput::make("phname")->label("Phone Name")->required()->columnSpan(2),
                 TextInput::make("mac")->label("MAC Address")->required(),
                 TextInput::make("ip")->label("IP Address")->required(),
+                TextInput::make("ip2")->label("IP Address")->columnSpan(2)->required(),
                 TextInput::make("sn")->label("Serial Number")->required()->columnSpan(2),
                 Select::make("profile")->label("Profile")->relationship("Profile","p_name")->columnSpan(2)->required()
             ]

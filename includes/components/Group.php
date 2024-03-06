@@ -62,7 +62,7 @@ class Group extends Component
     }
 
     public function sql():string{
-        return $this->name." TEXT ". ($this->required?"":"NOT")." NULL ";
+        return $this->name." JSON ". ($this->required?"":"NOT")." NULL ";
     }
 
 }

@@ -11,8 +11,6 @@
                 <div class="ui simple dropdown item">
                     <i class="user large circle icon"></i>
                     <div class="left menu">
-                        <div class="item"><i class="info circle icon"></i> Profile</div>
-                        <div class="item"><i class="wrench icon"></i> Settings</div>
                         <div class="item" style="background: #E2013D!important;"><a href="<?= Router::resource("logout")->operation("")->arg("")->url() ?>"><i class="sign-out icon"></i> Logout</a></div>
                     </div>
                 </div>

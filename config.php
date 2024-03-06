@@ -25,5 +25,13 @@ function DB(){
     return new db(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
 }
 
+$iterator = new DirectoryIterator("resources");
+foreach ($iterator as $fileinfo) {
+    if ($fileinfo->isFile()) {
+        $Class = (pathinfo( $fileinfo->getPathname() , PATHINFO_FILENAME));
+        $Class::migrate();
+    }
+}
+
 
 
