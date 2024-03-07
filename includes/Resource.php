@@ -13,6 +13,10 @@ class Resource
 
     protected static bool | null $dashboarded=true;
 
+    public static string $migrations="migrations";
+
+    public static string $rootFolder="resources";
+
 
     public static function getIcon(){return get_called_class()::$icon;}
     public static function getSingleLabel(){return get_called_class()::$singleLabel;}
@@ -107,14 +111,14 @@ class Resource
         $fields=array();
         foreach ($sender::form()->getSchema() as $field) if ($field->sql()!="") $fields[]=$field->sql();
         //die("fff");
-        $last_migration= DB()->getLastMigration($sender);
+        $last_migration= DB()->table(self::$migrations)->where("tbl",$sender)->orderBy()->limit()->select();
         $current_migration=DB()->structure($sender,$fields);
         //structure changed
         if ($last_migration!=$current_migration)
         {
-            DB()->drop($sender);
-            DB()->create($sender,$fields);
-            DB()->addMigration($sender,$current_migration);
+            DB()->Drop($sender);
+            DB()->Create($sender,$fields);
+            DB()->table(self::$migrations)->data(['tbl'=>$sender,'query'=>$current_migration])->insert();
         }
     }
 

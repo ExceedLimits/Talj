@@ -17,21 +17,16 @@ const DB_PASSWORD="";
 
 include(ROOT.'/includes/autoloader.php');
 
-include(ROOT.'/includes/db.php');
+include(ROOT.'/includes/Database.php');
 include(ROOT.'/includes/Router.php');
 
 
 function DB(){
-    return new db(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+    return new Database(DB_HOST,DB_NAME,DB_USER,DB_PASSWORD);
 }
 
-$iterator = new DirectoryIterator("resources");
-foreach ($iterator as $fileinfo) {
-    if ($fileinfo->isFile()) {
-        $Class = (pathinfo( $fileinfo->getPathname() , PATHINFO_FILENAME));
-        $Class::migrate();
-    }
-}
+
+
 
 
 

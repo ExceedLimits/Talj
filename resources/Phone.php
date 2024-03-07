@@ -24,9 +24,6 @@ class Phone extends Resource
                 TextInput::make("reg")->label("Registrar")->required(),
                 TextInput::make("account")->label("Account")->required(),
                 TextInput::make("acpassword")->label("Password")->required()->password(),
-
-
-
                 Select::make("profile")->label("Profile")->relationship("Profile","p_name")->columnSpan(2)->required()
             ]
         )->columns(2);
@@ -35,7 +32,7 @@ class Phone extends Resource
     protected static function table()
     {
         return Table::make()->schema([
-            //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable(),
+            //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable()
             TextColumn::make("phname")->label("Phone Name")->columnSpan(3)->searchable(),
             TextColumn::make("ip")->label("IP Address")->columnSpan(6)->searchable(),
             TextColumn::make("mac")->label("MAC Address")->columnSpan(2)->searchable(),

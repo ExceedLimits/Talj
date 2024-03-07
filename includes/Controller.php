@@ -11,11 +11,13 @@ class Controller
     protected function getWhere($term,$filters=[]){
         $wh=array();
         foreach ($filters as $f) {$wh[]="(".$f->getName()." LIKE '%".$term."%')";}
-        return " WHERE " .implode(' OR ',$wh);
+        return $wh;
     }
 
     public function getTotalCount($term="",$filters=[]){
-        return DB()->query("select count(*) as c from ".$this->sender.$this->getWhere($term,$filters))->fetchArray()['c'];
+        $q= DB()->table($this->sender);
+        foreach ($filters as $f) {$q=$q->whereLike($f->getName(),$term);}
+        return //DB()->table($this->sender)->wh->query("select count(*) as c from ".$this->sender.$this->getWhere($term,$filters))->fetchArray()['c'];
     }
 
     public function getPage($page,$term="",$filters=[]){
@@ -26,22 +28,22 @@ class Controller
 
     public function delete($id)
     {
-        DB()->delete($this->sender,$id);
+        DB()->table($this->sender)->delete($id);
     }
 
     public function updateIfFound($data,$arg){
         if ($arg=="new")
-            DB()->insert($this->sender,$data);
+            DB()->table($this->sender)->data($data)->insert();
         else
-            DB()->update($this->sender,$data,$arg);
+            DB()->table($this->sender)->data($data)->update($arg);
     }
 
     public function getByID($id):array{
-        return DB()->get($this->sender,$id);
+        return DB()->table($this->sender)->where('id',$id)->select();
     }
 
     public function isEmpty(){
-        return DB()->count($this->sender)=="0";
+        return DB()->table($this->sender)->select("count(*) as c")[0]["c"]=="0";
     }
 
 }

@@ -5,11 +5,15 @@ class Database{
 
     private $table="";
 
-    private $fields="";
-
     private $where=[];
 
-    private $orderBy="";
+    private $orderBy="created_at";
+
+    private $orderByType="DESC";
+
+    private $limit=null;
+
+    private $offset=null;
 
     private $data=[];
 
@@ -19,7 +23,7 @@ class Database{
 
         try{
 
-            $this->connection = new mysqli($dbhost, $username, $password, $dbname,$charset = 'utf8');
+            $this->connection = new mysqli($dbhost, $username, $password, $dbname);
 
             if( mysqli_connect_errno() ){
                 throw new Exception("Could not connect to database.");
@@ -60,14 +64,14 @@ class Database{
             $values= array_values($this->data);
             $updated=array();
             foreach ($this->data as $key=>$value)
-                $updated[]="(".$key."=?)";
-            $this->executeStatement( "UPDATE ".$this->table. " SET ".implode(',',$updated). " WHERE id=".$id , $values )->close();
+                $updated[]="(".$key."=".$value.")";
+            $this->executeStatement( "UPDATE ".$this->table. " SET ".implode(',',$updated). " WHERE id=".$id)->close();
 
         }catch(Exception $e){
             throw New Exception( $e->getMessage() );
         }
 
-        return false;
+
     }
 
     public function insert(){
@@ -75,8 +79,9 @@ class Database{
         try{
             $keys= array_keys($this->data);
             $values= array_values($this->data);
-            $placeholders= array_fill(0,sizeof($values),"?");
-            $stmt = $this->executeStatement( "INSERT INTO"." ".$this->table." (".implode(',',$keys).") VALUES (".implode(',',$placeholders).")",$values );
+            //$placeholders= array_fill(0,sizeof($values),"?");
+            //var_dump("INSERT INTO"." ".$this->table." (".implode(',',$keys).") VALUES ('".implode("','",$values)."')");
+            $stmt = $this->executeStatement( "INSERT INTO"." ".$this->table." (".implode(',',$keys).") VALUES ('".implode("','",$values)."')");
             $stmt->close();
 
             return $this->connection->insert_id;
@@ -84,14 +89,30 @@ class Database{
         }catch(Exception $e){
             throw New Exception( $e->getMessage() );
         }
-
-        return false;
-
     }
 
-    public function table($table=[]){
+    public function delete($id){
+        try{
+            $stmt = $this->executeStatement("DELETE FROM ".$this->table." WHERE id=".$id);
+            $stmt->close();
+        }catch(Exception $e){
+            throw New Exception( $e->getMessage() );
+        }
+    }
+
+    public function table($table=""){
         $this->table=$table;
         return $this;
+    }
+
+    public function found()
+    {
+        try{
+            $this->executeStatement("SELECT count(*) from ".$this->table);
+            return true;
+        }catch (Exception $exception){
+            return false;
+        }
     }
 
     public function where($key,$value,$condition=" OR ",$compare="=")
@@ -103,21 +124,36 @@ class Database{
 
     public function whereLike($key,$value,$condition=" OR ")
     {
-        $this->where($key,"%".$value."%",$condition,"LIKE");
+        return $this->where($key,"%".$value."%",$condition,"LIKE");
     }
 
     public function whereIn($key,$value,$condition=" OR ")
     {
-        $this->where($key,"(".$value.")",$condition,"IN");
+        return $this->where($key,"(".$value.")",$condition,"IN");
     }
 
-    public function orderBy($orderby){
+    public function orderBy($orderby="created_at",$orderbytype="DESC"){
         $this->orderBy=$orderby;
+        $this->orderByType=$orderbytype;
+        return $this;
+    }
+
+    public function limit($limit=1,$offset=0)
+    {
+        $this->limit=$limit;
+        $this->offset=$offset;
         return $this;
     }
 
     public function select($cols=[]){
         try{
+            $columns=($cols==[])?"*":implode(',',$cols);
+            $query="SELECT ".$columns." FROM ".$this->table;
+            $query.=($this->where==[])?"":" WHERE ".implode(',',$this->where);
+            $query.=($this->orderBy=="")?"":" ORDER BY ".$this->orderBy;
+            $query.=($this->orderBy=="")?"":" ".$this->orderByType;
+            $query.=($this->limit==null)?"":" LIMIT ".$this->limit;
+            $query.=($this->offset==null)?"":",".$this->offset;
 
             $stmt = $this->executeStatement($query);
 
@@ -130,13 +166,12 @@ class Database{
             throw New Exception( $e->getMessage() );
         }
 
-        return false;
     }
 
 
 
     // Insert a row/s in a Database Table
-    public function Insert($table , $data  = [] ){
+   /* public function Insert($table , $data  = [] ){
 
         try{
             $keys= array_keys($data);
@@ -253,10 +288,10 @@ class Database{
         }
 
         return false;
-    }
+    }*/
 
     // execute statement
-    private function executeStatement( $query = "" , $params = [] ){
+    private function executeStatement( $query = ""){
 
         try{
 
@@ -266,9 +301,9 @@ class Database{
                 throw New Exception("Unable to do prepared statement: " . $query);
             }
 
-            if( $params ){
-                call_user_func_array(array($stmt, 'bind_param'), $params );
-            }
+            /*if( $params ){
+                $stmt->bind_param("",$params);
+            }*/
 
             $stmt->execute();
 

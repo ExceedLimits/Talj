@@ -1,6 +1,14 @@
 <?php
 ob_start();
 require_once("config.php");
+if (DB()->table(Resource::$migrations)->found()){DB()->Create(Resource::$migrations,["tbl TEXT NOT NULL","query TEXT NOT NULL"]);}
+$iterator = new DirectoryIterator(Resource::$rootFolder);
+foreach ($iterator as $file) {
+    if ($file->isFile()) {
+        $Class = (pathinfo( $file->getPathname() , PATHINFO_FILENAME));
+        $Class::migrate();
+    }
+}
 ?>
 
 <!DOCTYPE html>
