@@ -56,6 +56,7 @@ class Phone extends Resource
 
         $replacements=array();
 
+
         $replacements["USER_NAME"]=$phone['account'];
         $replacements["PW"]=$phone['acpassword'];
         $replacements["REGISTERAR"]=$phone['reg'];
