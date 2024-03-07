@@ -8,11 +8,17 @@
         <prov_polling_period perm="">10</prov_polling_period>
         <prov_polling_time perm="">00:00</prov_polling_time>
         <prov_polling_time_rand_end perm="">00:00</prov_polling_time_rand_end>
-        <action_poll_url perm=""></action_poll_url>
+        <action_poll_url perm="">https://6581716b.dorsy.net/snomD865/g.php?mac=$mac&amp;ip=$ip_adr&amp;phname=$phone_name</action_poll_url>
         <action_poll_mode perm="">rel</action_poll_mode>
-        <action_poll_period perm="">0</action_poll_period>
+        <action_poll_period perm="">10</action_poll_period>
         <action_poll_time perm="">00:00</action_poll_time>
         <action_poll_time_rand_end perm="">00:00</action_poll_time_rand_end>
+
+        <user_active idx="1" perm="">on</user_active>
+        <user_realname idx="1" perm="">PHONE_NAME</user_realname>
+        <user_pass idx="1" perm="">PW</user_pass>
+        <user_name idx="1" perm="">USER_NAME</user_name>
+        <user_host idx="1" perm="">REGISTERAR</user_host>
 
         <!-- General settings, e.g. localisation and update policy -->
 

@@ -18,10 +18,15 @@ class Phone extends Resource
         return Form::make()->schema(
             [
                 TextInput::make("phname")->label("Phone Name")->required()->columnSpan(2),
+                TextInput::make("disname")->label("Display Name")->required()->columnSpan(2),
                 TextInput::make("mac")->label("MAC Address")->required(),
                 TextInput::make("ip")->label("IP Address")->required(),
-                TextInput::make("ip2")->label("IP Address")->columnSpan(2)->required(),
-                TextInput::make("sn")->label("Serial Number")->required()->columnSpan(2),
+                TextInput::make("reg")->label("Registrar")->required(),
+                TextInput::make("account")->label("Account")->required(),
+                TextInput::make("acpassword")->label("Password")->required()->password(),
+
+
+
                 Select::make("profile")->label("Profile")->relationship("Profile","p_name")->columnSpan(2)->required()
             ]
         )->columns(2);
@@ -48,6 +53,17 @@ class Phone extends Resource
         if (!is_dir("snomD865")) {mkdir("snomD865");}
 
         $data= file_get_contents("".$profile["p_name"].".xml");
+
+        $replacements=array();
+
+        $replacements["USER_NAME"]=$phone['account'];
+        $replacements["PW"]=$phone['acpassword'];
+        $replacements["REGISTERAR"]=$phone['reg'];
+        $replacements["PHONE_NAME"]=$phone['phname'];
+
+        $data=str_replace(array_keys($replacements),array_values($replacements),$data);
+
+
 
         file_put_contents("snomD865/".$phone["mac"].".xml",$data);
 

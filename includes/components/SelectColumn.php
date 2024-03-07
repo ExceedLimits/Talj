@@ -20,9 +20,13 @@ class SelectColumn extends Column
             }
         }else{
             $dataarr=DB()->query("select id,".$this->resourceLabel." from ".$this->resource. " where id in (".$val.")")->fetchAll();
-            foreach ($dataarr as $v){
-                $html.='<a href="'.Router::resource($this->resource)->operation("edit")->arg($v['id'])->url().'" class="ui image label"><i class="icon '.$this->resource::getIcon().'"></i>'.$v[$this->resourceLabel].'</a>';
+            if (sizeof($dataarr)==0) $html="Not Set";
+            else{
+                foreach ($dataarr as $v){
+                    $html.='<a href="'.Router::resource($this->resource)->operation("edit")->arg($v['id'])->url().'" class="ui image label"><i class="icon '.$this->resource::getIcon().'"></i>'.$v[$this->resourceLabel].'</a>';
+                }
             }
+
         }
         $html.="</td>";
         echo $html;
