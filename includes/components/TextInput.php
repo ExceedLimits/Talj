@@ -25,7 +25,7 @@ class TextInput extends Component
 
    /*'.($this->isRequired()?"required":"").'*/
     public function sql():string{
-        return $this->name." TEXT ". ($this->required?"":"NOT")." NULL ";
+        return $this->name." TEXT ". ($this->required?"NOT":"")." NULL ";
     }
 
     public function required($isRequired = true)

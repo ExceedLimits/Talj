@@ -12,13 +12,18 @@ class Table
     public function render($sender,$page,$term="")
     {
         $router=Router::resource($sender);
-        $controller= new Controller($sender);
-        $filters=array();
+        $calc_page = ($page - 1) * $this->pageSize;
+        $dbtable= DB()->table($sender);
         foreach ($this->schema as $col){
-            if ($col->isSearchable()) $filters[]=$col;
+            if ($col->isSearchable()){
+                $dbtable->orWhere($col->getName(),$term,"LIKE");
+            }
         }
-        $data= $controller->getPage($page,$term,$filters);
-        $total= $controller->getTotalCount($term,$filters);
+        $dbtable->limit($this->pageSize,$calc_page);
+        $data=$dbtable->select();
+        $total=$dbtable->count();
+
+        $addBtn= $sender::canAdd()?'<a href="'.$router->addNew().'" class="ui red button right"><i class="icon plus"></i>New '.$sender::getSingleLabel().'</a>':'';
 
 
         //if ($headers==[]) $headers= array_keys($data[0]);
@@ -28,7 +33,10 @@ class Table
                 <h1 class="ui header">'.$sender::getPluralLabel().'</h1>
                 </div>
                 <div class="item">
-                <a href="'.$router->addNew().'" class="ui red button right"><i class="icon plus"></i>New '.$sender::getSingleLabel().'</a>
+                '.
+            $addBtn
+            .'
+                
                 </div>
                 <div class="item right">
                     <form method="get" action="'.$router->url().'">
@@ -43,6 +51,7 @@ class Table
             </div>
         ';
         if ($data==[]) {echo "<h1 class='ui header' style='text-align: center'>Nothing to show Here</h1>";return;}
+        if (!$sender::canList()) return;
         echo '<table class="ui collapsing red table">';
             echo '<thead>';
 
@@ -59,8 +68,8 @@ class Table
                             $col->render($row[$col->getName()]);
                         }
                         echo '<td>';
-                            echo '<a href="'.$router->operation("edit")->arg($row['id'])->url().'"><i class="edit icon"></i></a>';
-                            echo '<a href="#" class="del-btn" data-id="'.$row['id'].'" id="del-btn-'.$row['id'].'"><i class="delete red icon"></i></a>';
+                            echo $sender::canEdit()?'<a href="'.$router->operation("edit")->arg($row['id'])->url().'"><i class="edit icon"></i></a>':'';
+                            echo $sender::canDelete()?'<a href="#" class="del-btn" data-id="'.$row['id'].'" id="del-btn-'.$row['id'].'"><i class="delete red icon"></i></a>':'';
                         echo '</td>';
                     echo '</tr>';
                     echo '

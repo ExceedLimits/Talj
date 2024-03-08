@@ -1,6 +1,7 @@
 <?php
 class Database{
 
+    private $SHOW_QUERY=false;
     private $connection = null;
 
     private $table="";
@@ -59,53 +60,55 @@ class Database{
         return $this;
     }
 
-    public function update($id){
+    public function update($id): void
+    {
         try{
             $values= array_values($this->data);
             $updated=array();
             foreach ($this->data as $key=>$value)
-                $updated[]="(".$key."=".$value.")";
+                $updated[]="(".$key."='".$value."')";
             $this->executeStatement( "UPDATE ".$this->table. " SET ".implode(',',$updated). " WHERE id=".$id)->close();
 
         }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
+            pretty($e->getMessage());
         }
 
 
     }
 
-    public function insert(){
+    public function insert():int{
 
         try{
             $keys= array_keys($this->data);
             $values= array_values($this->data);
             //$placeholders= array_fill(0,sizeof($values),"?");
-            //var_dump("INSERT INTO"." ".$this->table." (".implode(',',$keys).") VALUES ('".implode("','",$values)."')");
+            //die(var_dump("INSERT INTO"." ".$this->table." (".implode(',',$keys).") VALUES ('".implode("','",$values)."')"));
             $stmt = $this->executeStatement( "INSERT INTO"." ".$this->table." (".implode(',',$keys).") VALUES ('".implode("','",$values)."')");
             $stmt->close();
 
             return $this->connection->insert_id;
 
         }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
+            pretty($e->getMessage());
+            return 0;
         }
     }
 
-    public function delete($id){
+    public function delete($id):void{
         try{
             $stmt = $this->executeStatement("DELETE FROM ".$this->table." WHERE id=".$id);
             $stmt->close();
         }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
+            pretty($e->getMessage());
         }
     }
 
-    public function table($table=""){
+    public function table($table=""):Database{
         $this->table=$table;
         return $this;
     }
 
-    public function found()
+    public function found():bool
     {
         try{
             $this->executeStatement("SELECT count(*) from ".$this->table);
@@ -115,187 +118,90 @@ class Database{
         }
     }
 
-    public function where($key,$value,$condition=" OR ",$compare="=")
+    public function where($key,$value,$compare="=",$joiner=""):Database
     {
-        $cond=($this->where==[])?"":$condition;//$this->where[]=" (1=1) ";
-        $this->where[]= $cond. " (".$key." ".$compare." '".$value."')";
+        if ($this->where==[]) $joiner="";
+        $condition=" ".$joiner." (".$key." ".$compare." '".$value."')";
+        if (strtoupper($compare)=="LIKE"){
+            $condition= " ".$joiner." (".$key." ".$compare." '%".$value."%')";
+        }
+        if (strtoupper($compare)=="IN"){
+            $condition= " ".$joiner." (".$key." ".$compare." (".$value."))";
+        }
+        $this->where[]= $condition;
         return $this;
     }
 
-    public function whereLike($key,$value,$condition=" OR ")
-    {
-        return $this->where($key,"%".$value."%",$condition,"LIKE");
+    public function andWhere($key,$value,$compare="="):Database{
+        return $this->where($key,$value,$compare,"AND");
     }
 
-    public function whereIn($key,$value,$condition=" OR ")
-    {
-        return $this->where($key,"(".$value.")",$condition,"IN");
+    public function orWhere($key,$value,$compare="="):Database{
+        return $this->where($key,$value,$compare,"OR");
     }
 
-    public function orderBy($orderby="created_at",$orderbytype="DESC"){
-        $this->orderBy=$orderby;
-        $this->orderByType=$orderbytype;
+
+
+
+
+    public function orderBy($orderBy="created_at", $orderByType="DESC"):Database{
+        $this->orderBy=$orderBy;
+        $this->orderByType=$orderByType;
         return $this;
     }
 
-    public function limit($limit=1,$offset=0)
+    public function limit($limit=1,$offset=0):Database
     {
         $this->limit=$limit;
         $this->offset=$offset;
         return $this;
     }
 
-    public function select($cols=[]){
+    public function count($col="id"): int{
+        return $this->select(["count(".$col.") as c"])[0]["c"];
+    }
+
+    public function first($cols=[]): array{
+        $data=$this->select($cols);
+        return $data==[]?[]:$data[0];
+    }
+
+    public function single($col): string{
+        return $this->first([$col])[$col];
+    }
+
+    public function select($cols=[]): array
+    {
+        $columns=($cols==[])?"*":implode(',',$cols);
+        $query="SELECT ".$columns." FROM ".$this->table;
         try{
-            $columns=($cols==[])?"*":implode(',',$cols);
-            $query="SELECT ".$columns." FROM ".$this->table;
-            $query.=($this->where==[])?"":" WHERE ".implode(',',$this->where);
+            $query.=($this->where==[])?"":" WHERE ".trim(implode(' ',$this->where));
             $query.=($this->orderBy=="")?"":" ORDER BY ".$this->orderBy;
             $query.=($this->orderBy=="")?"":" ".$this->orderByType;
             $query.=($this->limit==null)?"":" LIMIT ".$this->limit;
             $query.=($this->offset==null)?"":",".$this->offset;
 
             $stmt = $this->executeStatement($query);
-
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             $stmt->close();
 
             return $result;
 
         }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
+            pretty("SQL:".$query." Error:".$e->getMessage());
+            return [];
         }
 
     }
-
-
-
-    // Insert a row/s in a Database Table
-   /* public function Insert($table , $data  = [] ){
-
-        try{
-            $keys= array_keys($data);
-            $values= array_values($data);
-            $placeholders= array_fill(0,sizeof($values),"?");
-            $stmt = $this->executeStatement( "INSERT INTO"." ".$table." (".implode(',',$keys).") VALUES (".implode(',',$placeholders).")",$values );
-            $stmt->close();
-
-            return $this->connection->insert_id;
-
-        }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
-        }
-
-        return false;
-
-    }
-
-    // Select a row/s in a Database Table
-    public function Select( $query = "" , $params = [] ){
-
-        try{
-
-            $stmt = $this->executeStatement( $query , $params );
-
-            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-
-            return $result;
-
-        }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
-        }
-
-        return false;
-    }
-
-    public function selectALL( $table = ""){
-
-        try{
-
-            $stmt = $this->executeStatement( "SELECT * from ".$table);
-
-            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-
-            return $result;
-
-        }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
-        }
-
-        return false;
-    }
-
-    public function selectID( $table = "",$id){
-
-        try{
-
-            $stmt = $this->executeStatement( "SELECT * from ".$table. " WHERE id=".$id);
-            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-
-            return sizeof($result)>0?$result[0]:[];
-
-        }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
-        }
-
-        return false;
-    }
-
-    public function selectIN( $table = "",$field,$arr=[]){
-
-        try{
-
-            $stmt = $this->executeStatement( "SELECT * from ".$table. " WHERE ".$field." IN (".explode(',',$arr).")");
-            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-
-            return $result;
-
-        }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
-        }
-
-        return false;
-    }
-
-    // Update a row/s in a Database Table
-    public function Update($table , $data=[], $id){
-        try{
-            $values= array_values($data);
-            $updated=array();
-            foreach ($data as $key=>$value)
-                $updated[]="(".$key."=?)";
-            $this->executeStatement( "UPDATE ".$table. " SET ".implode(',',$updated). " WHERE id=".$id , $values )->close();
-
-        }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
-        }
-
-        return false;
-    }
-
-    // Remove a row/s in a Database Table
-    public function Remove($table , $id){
-        try{
-
-            $this->executeStatement( "DELETE FROM ? WHERE id=?" , [$table,$id] )->close();
-
-        }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
-        }
-
-        return false;
-    }*/
 
     // execute statement
-    private function executeStatement( $query = ""){
+    private function executeStatement($query = ""){
 
         try{
 
-            $stmt = $this->connection->prepare( $query );
+            if ($this->SHOW_QUERY) pretty($query);
+
+            $stmt = $this->connection->prepare($query);
 
             if($stmt === false) {
                 throw New Exception("Unable to do prepared statement: " . $query);
@@ -310,7 +216,8 @@ class Database{
             return $stmt;
 
         }catch(Exception $e){
-            throw New Exception( $e->getMessage() );
+            pretty("SQL:".$query." Error:".$e->getMessage());
+            return "";
         }
 
     }

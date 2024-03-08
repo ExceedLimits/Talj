@@ -6,15 +6,27 @@ class Form
     protected array | null $schema =array();
 
     public static function make() {return new self();}
-    public function render($sender,$data=[])
+    public function render($sender,$arg)
     {
+        if ($arg=="new"){
+           $op="Add ".$sender;
+           if (!$sender::canAdd()){
+               echo '<div class="ui error message"><h3 class="ui header">Add Operation was Restricted by System Admin</h3></div>';
+               return;
+           }
+        }else{
+            $op="Edit ".$sender;
+            if (!$sender::canEdit()){
+                echo '<div class="ui error message"><h3 class="ui header">Edit Operation was Restricted by System Admin</h3></div>';
+                return;
+            }
+        }
 
-        $op=(count($data)==0?"Add":"Update"). " ".$sender;
-
-        $actionURL= Router::resource($sender)->operation("save")->arg(count($data)==0?"new":$data['id'])->url();
+        $data= DB()->table($sender)->where("id",$arg)->first();
+        $actionURL= Router::resource($sender)->operation("save")->arg($arg)->url();
 
         $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-        $totalcols= 16/($this->cols);
+
 
 
         $html='
@@ -26,7 +38,7 @@ class Form
                 <div class="row">';
         echo $html;
                     foreach ($this->schema as $elem){
-                        echo '<div class="'.$f->format($totalcols*$elem->getColumnSpan()).' wide column" style="padding:0.5rem">';
+                        echo '<div class="'.$f->format((16/($this->cols))*$elem->getColumnSpan()).' wide column" style="padding:0.5rem">';
                         if ($elem instanceof Heading)
                             $elem->render();
                         else

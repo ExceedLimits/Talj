@@ -123,7 +123,7 @@ class Profile extends Resource
     {
 
         parent::afterSave($id,$data);
-        if ($id!="new") $profile= DB()->get("Profile",$id); else $profile=$data;
+        if ($id!="new") $profile= DB()->table("Profile")->where("id",$id)->select(); else $profile=$data;
         self::createXML($profile);
 
 
@@ -184,8 +184,8 @@ class Profile extends Resource
 
         $tbookitem='<item context="active" type="none" fav="false" mod="true" index="0"><name>TB_NX</name><number>TB_NUMX</number><number_type>extension</number_type><birthday>00.00.99</birthday></item>'."\r\n";
         $replacements["PHONE_BOOK"]='<tbook e="2">'."\r\n";
-        foreach (DB()->getIn("Phonebook",$profile['pb']) as $phonebook){
-            foreach(DB()->getIn("Contact",$phonebook['id']) as $contact)
+        foreach (DB()->table("Phonebook")->where("id","(".$profile['pb'].")"," IN ")->select() as $phonebook){
+            foreach(DB()->table("Contact")->where("id","(".$phonebook['id'].")"," IN ")->select() as $contact)
                 $replacements["PHONE_BOOK"].= str_replace(["TB_NX","TB_NUMX"],[$contact['f_name'],$contact['num']],$tbookitem);
         }
         $replacements["PHONE_BOOK"].='</tbook>';
@@ -198,7 +198,7 @@ class Profile extends Resource
 
         //update related phones
         $data= file_get_contents("".$profile["p_name"].".xml");
-        foreach (DB()->query("select * from Phone where profile =".$profile["id"])->fetchAll() as $phone)
+        foreach (DB()->table("Phone")->where("profile",$profile["id"])->select() as $phone)
         file_put_contents("snomD865/".$phone["mac"].".xml",$data);
 
     }

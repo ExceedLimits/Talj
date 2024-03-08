@@ -14,40 +14,40 @@ class User extends Resource
     public static bool | null $dashboarded=false;
 
 
+    public static function canList(): bool
+    {
+        return currentUser()["kind"]=="admin";
+    }
+
+    public static function canDelete():bool
+    {
+        return false;
+    }
 
     public static function form()
     {
         return Form::make()->schema(
             [
                 TextInput::make("username")->label("User Name")->required(),
-                TextInput::make("password")->label("password")->password()->required(),
+                TextInput::make("password")->label("Password")->password()->required(),
+                Select::make("kind")->label("Kind")->options(["admin"=>"Admin","normal"=>"Normal"])->required()
             ]
-        )->columns(2);
+        )->columns(3);
     }
 
     protected static function table()
     {
         return Table::make()->schema([
-            //TextColumn::make("id")->label("ID")->columnSpan(1)->searchable(),
-            TextColumn::make("username")->label("User Name")->columnSpan(16)->searchable(),
-
+            TextColumn::make("username")->label("User Name")->columnSpan(8)->searchable(),
+            SelectColumn::make("kind")->label("Kind")->options(["admin"=>"Admin","normal"=>"Normal"])->columnSpan(8)->searchable(),
         ])->resultPerPage(10);
     }
 
-
-    public static function migrate(): void
+    protected static function afterCreation()
     {
+        DB()->table("User")->data(["username"=>"admin","password"=>password_hash("admin",PASSWORD_DEFAULT),"kind"=>"admin"])->insert();
+        DB()->table("User")->data(["username"=>"normal","password"=>password_hash("normal",PASSWORD_DEFAULT),"kind"=>"normal"])->insert();
 
-        parent::migrate();
-        $sender= get_called_class();
-        $controller= new Controller($sender);
-
-        if ($controller->isEmpty()){
-            $controller->updateIfFound(["username"=>"admin","password"=>password_hash("admin",PASSWORD_DEFAULT)],"new");
-        }
     }
-
-
-
 
 }

@@ -17,7 +17,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $password = trim($_POST["password"]);
 
-    $user = DB()->query("select * from User where username='" . $username . "'")->fetchArray();
+    $user = DB()->table("User")->where("username",$username)->first();
 
 
     if ($user == []) {
@@ -39,7 +39,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 }
 ?>
-<div style="height: 100vh;width: 100%" class="ui grid middle aligned container">
+<div style="height: 100vh;width: 100%;" class="ui grid middle aligned container">
     <div class="row">
         <div class="column">
             <div class="ui text container segment card" style="padding: 1.5rem">

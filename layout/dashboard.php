@@ -2,7 +2,8 @@
 <div class="ui four cards">
     <?php
     $resources=[];
-    $iterator = new DirectoryIterator("resources");
+    $iterator = new DirectoryIterator(RESOURCES);
+
     foreach ($iterator as $fileinfo) {
         if ($fileinfo->isFile()) {
             $sender = (pathinfo( $fileinfo->getPathname() , PATHINFO_FILENAME));
@@ -12,7 +13,7 @@
                  <div class="content">
                    <i class="right floated icon red huge '.$sender::getIcon().'"></i>
                   <div class=" header huge" style="font-size: xx-large">
-                    '.DB()->count(($sender)).'
+                    '.DB()->table($sender)->count().'
                   </div>
                   <div class="meta red header" style="font-size: large;color: #E2013D">
                     '.$sender::getPluralLabel().'

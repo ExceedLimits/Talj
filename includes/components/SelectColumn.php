@@ -19,7 +19,7 @@ class SelectColumn extends Column
                 $html.='<a class="ui image label">'.$this->opts[$v].'</a>';
             }
         }else{
-            $dataarr=DB()->query("select id,".$this->resourceLabel." from ".$this->resource. " where id in (".$val.")")->fetchAll();
+            $dataarr=DB()->table($this->resource)->where("id",$val,"IN")->select(["id",$this->resourceLabel]);
             if (sizeof($dataarr)==0) $html="Not Set";
             else{
                 foreach ($dataarr as $v){
