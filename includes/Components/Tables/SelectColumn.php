@@ -8,7 +8,6 @@ class SelectColumn extends Column
     protected string $resourceLabel="";
 
     protected array | null $opts=[];
-    protected bool | null $searchable=false;
 
     public static function make($name) { return new self($name);}
     public function render($val)
@@ -32,21 +31,13 @@ class SelectColumn extends Column
         echo $html;
     }
 
-    public function searchable($isSearchable=true)
-    {
-        $this->searchable=$isSearchable;
-        return $this;
-    }
+
 
     public function options($ops){
         $this->opts=$ops;
         return $this;
     }
 
-    public function getName()
-    {
-        return parent::getName();
-    }
 
     public function relationship($resource,$label){
         $this->resource=$resource;

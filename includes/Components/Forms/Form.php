@@ -25,11 +25,34 @@ class Form
         $data= DB()->table($sender)->where("id",$arg)->first();
         $actionURL= Router::resource($sender)->operation("save")->arg($arg)->url();
 
-        $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+
+        $elements=array();
+
+        foreach ($this->schema as $elem){
+            $value=array_key_exists($elem->getName(),$data)?$data[$elem->getName()]:"";
+            $elements[]='<div class="'.$this->getRealColumnSpan($elem->getColumnSpan()).' wide column" style="padding:0.5rem">'.$elem->render($value).'</div>';
+        }
+
+        echo Template::make('
+            <form class="ui form responsive" style="padding:1rem" method="post" action="{{$actionURL}}">
+            <h1 class="ui dividing header"> {{$op}}</h1>
+            <div class="ui error message"></div>
+                <section class="ui grid">
+                <div class="row">
+                    {{$elements}}
+                </div>
+                </section>            
+            <div class="ui divider"></div>
+            <button type="submit" class="red ui button" style="margin-right: 0.5rem">  {{$op}}</button>
+            <a href="javascript:history.go(-1)" class="button ui" style="">Cancel</a>
+            
+            </form>
+        ')->with([
+            "actionURL"=>$actionURL,"op"=>$op,"elements"=>implode($elements)
+        ])->render();
 
 
-
-        $html='
+        /*$html='
         <form class="ui form responsive" style="padding:1rem" method="post" action="'. $actionURL .'">
             <h1 class="ui dividing header"> '.$op.'</h1><div class="ui error message"></div>
             
@@ -54,7 +77,7 @@ class Form
             
             </form>
        ';
-        echo $html;
+        echo $html;*/
 
     }
 
@@ -69,9 +92,16 @@ class Form
         $this->schema=$fields;
         return $this;
     }
+    public function schemaAdd($elem){$this->schema[]=$elem;return $this;}
 
     public function getSchema() {
         return $this->schema;
+    }
+
+    protected function getRealColumnSpan($colspan):string{
+        $f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+
+        return $f->format((16/($this->cols))*$colspan);
     }
 
 }

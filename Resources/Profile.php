@@ -103,9 +103,9 @@ class Profile extends Resource
                 Group::make("cs")->label("Functions - Context Sensitive Keys")->schema($cs)->columns(2)->columnSpan(2),
                 Group::make("sd")->label("Functions - Speed Dial")->schema($sd)->columns(4)->columnSpan(2),
                 Group::make("lk")->label("Functions - Line Keys")->schema($lk)->columns(3)->columnSpan(2),
-                Group::make("ppp")->label("Functions - Line Keys")->schema($lk)->columns(3)->columnSpan(2),
 
             ])->columnSpan(2)
+
 
         ])->columns(2);
     }

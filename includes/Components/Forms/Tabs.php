@@ -31,13 +31,16 @@ class Tabs extends Component
         return $this;
     }
 
+    public function tab($tab){$this->tabs[]=$tab;return $this;}
+
 
     public function sql():string{
         $sql=[];
         foreach ($this->tabs as $tab){
             $sql[]=$tab->sql();
         }
-        return implode(",",$sql);//$this->name." TEXT ". ($this->required?"":"NOT")." NULL ";
+        return implode(",",$sql);
+
     }
 
 }

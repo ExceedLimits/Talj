@@ -1,7 +1,8 @@
 <?php
 
 
-class Group extends Component
+class
+Group extends Field
 {
     protected array | null $schema=[];
 

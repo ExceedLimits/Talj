@@ -46,7 +46,7 @@ class Database{
         return $sql;
     }
 
-    // Create a Database Table
+    // Create a Database Tables
     public function Create($table, $fields=[]){
         return $this->executeStatement($this->structure($table,$fields));
     }
@@ -139,10 +139,6 @@ class Database{
     public function orWhere($key,$value,$compare="="):Database{
         return $this->where($key,$value,$compare,"OR");
     }
-
-
-
-
 
     public function orderBy($orderBy="created_at", $orderByType="DESC"):Database{
         $this->orderBy=$orderBy;

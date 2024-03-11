@@ -3,19 +3,22 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 define('CURRENT_PAGE', basename($_SERVER['REQUEST_URI']));
-define('ROOT',dirname(dirname(__FILE__)));
-const RESOURCES = ROOT . "/resources/";
+define('ROOT', dirname(__FILE__, 2));
+const RESOURCES = ROOT . "/Resources/";
 const INCLUDES= ROOT."/includes/";
 
-const COMPONENTS= INCLUDES."/components/";
+const COMPONENTS= INCLUDES."/Components/";
+
+const COMPONENTS_TYPES= ['Forms','Tables'];
 
 require_once("config.php");
 
 require_once("Utils.php");
 
 spl_autoload_register(function($class){
-    if (file_exists(COMPONENTS . $class . '.php')) {
-        require_once COMPONENTS . $class . '.php';
+    foreach (COMPONENTS_TYPES as $TYPE)
+    if (file_exists(COMPONENTS .$TYPE."/". $class . '.php')) {
+        require_once COMPONENTS .$TYPE."/" . $class . '.php';
     }
 
     if (file_exists(RESOURCES . $class. '.php')) {
@@ -31,10 +34,6 @@ spl_autoload_register(function($class){
 include('Database.php');
 include('Router.php');
 include('Resource.php');
-
-
-
-
 Resource::migrate();
 
 

@@ -15,6 +15,7 @@ function pretty($var):void
     if (is_array($var)){
         print_r($var);
     }else{
+        if (is_object($var)) var_dump($var);  else
         echo($var);
     }
 

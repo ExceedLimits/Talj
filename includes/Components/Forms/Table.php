@@ -7,7 +7,6 @@ class Table
     protected int $pageSize=5;
 
 
-
     public static function make() {return new self();}
     public function render($sender,$page,$term="")
     {
